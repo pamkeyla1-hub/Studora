@@ -4,9 +4,8 @@
    ========================================== */
 
 // 1) Paste your Supabase project values here.
-const SUPABASE_URL = "https://wlvdoekstcisatqiqqow.supabase.co"; 
-const SUPABASE_KEY = "sb_publishable__9cPey1XsdLTx5gBPY0Q5w_5Dv5owQU";  
-
+const SUPABASE_URL ="https://wlvdoekstcisatqiqqow.supabase.co"; 
+const SUPABASE_KEY = "sb_publishable_OjgfIQeFmu0BEuc6cb-Eew_UnDaiZlq";  
 const TABLE = "studyspace_data";
 const LOCAL_KEY = "studora-data-v1";
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
