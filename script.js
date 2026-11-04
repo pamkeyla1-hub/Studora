@@ -1,5 +1,5 @@
-/* ==========================================
-   STUDORA — Main JavaScript
+/* ==========================================  
+KEYCLA — Main JavaScript
    Your space. Your pace. Your progress.
    ========================================== */
 
@@ -7,7 +7,7 @@
 const SUPABASE_URL ="https://wlvdoekstcisatqiqqow.supabase.co"; 
 const SUPABASE_KEY ="sb_publishable__9cPey1XsdLTx5gBPY0Q5w_5Dv5owQU";  
 const TABLE = "studyspace_data";
-const LOCAL_KEY = "studora-data-v1";
+const LOCAL_KEY = "Keycla-data-v1";
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const MODES = { focus: 25, short: 5, long: 15 };
 
