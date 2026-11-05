@@ -1836,3 +1836,4 @@ if (googleLoginButton) {
     }
   });
 }
+console.log("KEYCLA Google button:", googleLoginButton);
