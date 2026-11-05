@@ -12,7 +12,7 @@ const SUPABASE_KEY = "sb_publishable__9cPey1XsdLTx5gBPY0Q5w_5Dv5owQU";
 
 const TABLE = "studyspace_data";
 
-// Keep the previous key so existing local data can be recovered.
+// Legacy keys, only used by the local demo mode (no account).
 const LOCAL_KEY = "studora-data-v1";
 const NEW_LOCAL_KEY = "keycla-data-v1";
 
@@ -20,6 +20,17 @@ const DAYS = [
   "Monday", "Tuesday", "Wednesday", "Thursday",
   "Friday", "Saturday", "Sunday"
 ];
+
+const DAY_LABELS = {
+  en: {
+    Monday: "Monday", Tuesday: "Tuesday", Wednesday: "Wednesday",
+    Thursday: "Thursday", Friday: "Friday", Saturday: "Saturday", Sunday: "Sunday"
+  },
+  fr: {
+    Monday: "Lundi", Tuesday: "Mardi", Wednesday: "Mercredi",
+    Thursday: "Jeudi", Friday: "Vendredi", Saturday: "Samedi", Sunday: "Dimanche"
+  }
+};
 
 const MODES = {
   focus: 25 * 60,
@@ -37,9 +48,57 @@ const LANGUAGES = {
     journal: "Weekly Reflection",
     settings: "Settings",
     logout: "Log out",
+    tasksShort: "Tasks",
+    planShort: "Plan",
+    focusShort: "Focus",
+    moreShort: "More",
+    glance: "Your day, at a glance.",
+    glanceSub: "Focus on what needs your attention.",
+    customize: "Customize ↗",
+    viewTasks: "View my tasks",
+    priorities: "Tasks that need attention",
+    prioritiesSub: "Your upcoming work.",
+    seeAll: "See all",
+    seeAllArrow: "See all →",
+    today: "Today's timetable",
+    todaySub: "What your day looks like.",
+    editArrow: "Edit ↗",
     newTask: "New task",
+    btnNewTask: "＋ New task",
     addSession: "Add session",
+    btnAddSession: "＋ Add session",
     newGoal: "New goal",
+    btnNewGoal: "＋ New goal",
+    tasksEyebrow: "STAY ORGANIZED",
+    tasksSub: "Keep track of homework, revision and projects.",
+    timetableEyebrow: "PLAN YOUR WEEK",
+    timetableSub: "Build a weekly routine that works for you.",
+    weeklySchedule: "Weekly schedule",
+    yourWeek: "YOUR WEEK",
+    timetableHelper: "Select a session to edit or remove it.",
+    goalsEyebrow: "MAKE PROGRESS",
+    goalsSub: "Turn your plans into achievable steps.",
+    achievedGoals: "Achieved goals",
+    focusEyebrow: "DEEP WORK",
+    focusSub: "Give one task your full attention.",
+    timeToFocus: "TIME TO FOCUS",
+    modeFocus: "Focus",
+    modeShort: "Short break",
+    modeLong: "Long break",
+    reset: "Reset",
+    timerNote: "One step at a time. Stay present.",
+    intentionTitle: "Today's intention",
+    intentionSub: "What would you like to accomplish?",
+    saveIntention: "Save intention",
+    focusToday: "Your focus today",
+    sessionsToday: "Sessions today",
+    minutesFocused: "Minutes focused",
+    journalEyebrow: "PAUSE & REFLECT",
+    journalSub: "Notice your progress and plan your next steps.",
+    journalTodayLabel: "TODAY",
+    saveReflection: "Save reflection",
+    settingsEyebrow: "MAKE IT YOURS",
+    settingsSub: "Personalize your KEYCLA workspace.",
     save: "Save",
     cancel: "Cancel",
     delete: "Delete",
@@ -47,10 +106,8 @@ const LANGUAGES = {
     completed: "Completed",
     pending: "Pending",
     allTasks: "All tasks",
+    allSubjects: "All subjects",
     search: "Search tasks...",
-    today: "Today's timetable",
-    priorities: "Tasks that need attention",
-    seeAll: "See all",
     noTasks: "No tasks yet. Add your first task!",
     noSchedule: "No sessions planned for today.",
     noGoals: "No goals yet. Create your first goal!",
@@ -83,6 +140,9 @@ const LANGUAGES = {
     emailRequired: "Please enter your email address.",
     recoverySent: "Password recovery instructions have been sent if the address is registered.",
     passwordUpdated: "Your password has been updated.",
+    login: "Log in",
+    createAccount: "Create account",
+    wait: "Please wait...",
     language: "Language"
   },
 
@@ -95,9 +155,57 @@ const LANGUAGES = {
     journal: "Réflexion hebdomadaire",
     settings: "Paramètres",
     logout: "Déconnexion",
+    tasksShort: "Tâches",
+    planShort: "Planning",
+    focusShort: "Focus",
+    moreShort: "Plus",
+    glance: "Ta journée en un coup d'œil.",
+    glanceSub: "Concentre-toi sur l'essentiel.",
+    customize: "Personnaliser ↗",
+    viewTasks: "Voir mes tâches",
+    priorities: "Tâches à traiter",
+    prioritiesSub: "Ton travail à venir.",
+    seeAll: "Tout voir",
+    seeAllArrow: "Tout voir →",
+    today: "Programme du jour",
+    todaySub: "À quoi ressemble ta journée.",
+    editArrow: "Modifier ↗",
     newTask: "Nouvelle tâche",
+    btnNewTask: "＋ Nouvelle tâche",
     addSession: "Ajouter une séance",
+    btnAddSession: "＋ Ajouter une séance",
     newGoal: "Nouvel objectif",
+    btnNewGoal: "＋ Nouvel objectif",
+    tasksEyebrow: "RESTE ORGANISÉ",
+    tasksSub: "Suis tes devoirs, révisions et projets.",
+    timetableEyebrow: "PLANIFIE TA SEMAINE",
+    timetableSub: "Construis une routine hebdomadaire qui te convient.",
+    weeklySchedule: "Planning de la semaine",
+    yourWeek: "TA SEMAINE",
+    timetableHelper: "Sélectionne une séance pour la modifier ou la supprimer.",
+    goalsEyebrow: "AVANCE",
+    goalsSub: "Transforme tes projets en étapes réalisables.",
+    achievedGoals: "Objectifs atteints",
+    focusEyebrow: "TRAVAIL PROFOND",
+    focusSub: "Donne toute ton attention à une seule tâche.",
+    timeToFocus: "C'EST L'HEURE DE SE CONCENTRER",
+    modeFocus: "Concentration",
+    modeShort: "Pause courte",
+    modeLong: "Pause longue",
+    reset: "Réinitialiser",
+    timerNote: "Une étape à la fois. Reste présent.",
+    intentionTitle: "Intention du jour",
+    intentionSub: "Que souhaites-tu accomplir ?",
+    saveIntention: "Enregistrer l'intention",
+    focusToday: "Ta concentration aujourd'hui",
+    sessionsToday: "Séances aujourd'hui",
+    minutesFocused: "Minutes de concentration",
+    journalEyebrow: "FAIS UNE PAUSE",
+    journalSub: "Observe tes progrès et prépare la suite.",
+    journalTodayLabel: "AUJOURD'HUI",
+    saveReflection: "Enregistrer la réflexion",
+    settingsEyebrow: "PERSONNALISE",
+    settingsSub: "Personnalise ton espace KEYCLA.",
     save: "Enregistrer",
     cancel: "Annuler",
     delete: "Supprimer",
@@ -105,10 +213,8 @@ const LANGUAGES = {
     completed: "Terminées",
     pending: "En attente",
     allTasks: "Toutes les tâches",
+    allSubjects: "Toutes les matières",
     search: "Rechercher une tâche...",
-    today: "Programme du jour",
-    priorities: "Tâches à traiter",
-    seeAll: "Tout voir",
     noTasks: "Aucune tâche pour le moment. Ajoute ta première tâche !",
     noSchedule: "Aucune séance prévue aujourd'hui.",
     noGoals: "Aucun objectif. Crée ton premier objectif !",
@@ -141,6 +247,9 @@ const LANGUAGES = {
     emailRequired: "Saisis ton adresse e-mail.",
     recoverySent: "Si cette adresse est enregistrée, les instructions ont été envoyées.",
     passwordUpdated: "Ton mot de passe a été mis à jour.",
+    login: "Connexion",
+    createAccount: "Créer un compte",
+    wait: "Un instant...",
     language: "Langue"
   }
 };
@@ -156,9 +265,11 @@ const $$ = (selector) => [...document.querySelectorAll(selector)];
 let supabaseClient = null;
 let currentUser = null;
 let data = null;
+let loadingUser = false;
 let currentLanguage = localStorage.getItem("keycla-language") || "en";
 
 let timerInterval = null;
+let timerEnd = null;
 let timerRemaining = MODES.focus;
 let currentMode = "focus";
 let timerRunning = false;
@@ -172,8 +283,15 @@ function t(key) {
   return LANGUAGES[currentLanguage]?.[key] || LANGUAGES.en[key] || key;
 }
 
+// Local date (not UTC), so the day changes at local midnight.
 function today() {
-  return new Date().toISOString().slice(0, 10);
+  const d = new Date();
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+function dayLabel(day) {
+  return DAY_LABELS[currentLanguage]?.[day] || day;
 }
 
 function makeId() {
@@ -212,6 +330,17 @@ function initials(name) {
     .slice(0, 2)
     .map(part => part[0]?.toUpperCase() || "")
     .join("") || "K";
+}
+
+function isSafeImageURL(value) {
+  if (!value) return true;
+  if (/["'()\\\s]/.test(value)) return false;
+
+  try {
+    return new URL(value).protocol === "https:";
+  } catch {
+    return false;
+  }
 }
 
 function toast(message) {
@@ -298,17 +427,23 @@ function normalize(raw = {}) {
 // 4. LOCAL STORAGE AND SUPABASE
 // ==========================================
 
+// One local key per account, so two users on the same device
+// never see each other's data.
+function localKey() {
+  return `${NEW_LOCAL_KEY}:${currentUser?.id || "local"}`;
+}
+
 function readLocalData() {
   try {
-    const newData = localStorage.getItem(NEW_LOCAL_KEY);
-    const oldData = localStorage.getItem(LOCAL_KEY);
+    let saved = localStorage.getItem(localKey());
 
-    const saved = newData || oldData;
+    // The legacy keys are only recovered in local demo mode.
+    if (!saved && !currentUser) {
+      saved = localStorage.getItem(NEW_LOCAL_KEY) || localStorage.getItem(LOCAL_KEY);
+    }
 
     if (saved) {
-      const parsed = JSON.parse(saved);
-      localStorage.setItem(NEW_LOCAL_KEY, JSON.stringify(parsed));
-      return normalize(parsed);
+      return normalize(JSON.parse(saved));
     }
   } catch (error) {
     console.error("Local data could not be read:", error);
@@ -319,7 +454,7 @@ function readLocalData() {
 
 function saveLocalData() {
   try {
-    localStorage.setItem(NEW_LOCAL_KEY, JSON.stringify(data));
+    localStorage.setItem(localKey(), JSON.stringify(data));
   } catch (error) {
     console.error("Local save failed:", error);
     toast("Unable to save local data. Check your device storage.");
@@ -351,33 +486,40 @@ async function saveData() {
   await saveCloudData();
 }
 
-async function loadStudentData(user) {
-  currentUser = user;
+async function loadStudentData(user, initialName = "") {
+  if (loadingUser) return;
+  loadingUser = true;
 
-  let cloudData = null;
+  try {
+    currentUser = user;
 
-  if (supabaseClient && user) {
-    const { data: row, error } = await supabaseClient
-      .from(TABLE)
-      .select("data")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    let cloudData = null;
 
-    if (error) {
-      console.error("Cloud data could not be loaded:", error);
-    } else if (row?.data) {
-      cloudData = row.data;
+    if (supabaseClient && user) {
+      const { data: row, error } = await supabaseClient
+        .from(TABLE)
+        .select("data")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Cloud data could not be loaded:", error);
+      } else if (row?.data) {
+        cloudData = row.data;
+      }
     }
+
+    data = normalize(cloudData || readLocalData());
+
+    if (!cloudData && initialName && data.profile.name === "Student") {
+      data.profile.name = initialName;
+    }
+
+    await saveData();
+    showApplication();
+  } finally {
+    loadingUser = false;
   }
-
-  data = normalize(cloudData || readLocalData());
-
-  if (cloudData) {
-    saveLocalData();
-  }
-
-  await saveData();
-  showApplication();
 }
 
 
@@ -405,11 +547,15 @@ function showApplication() {
   $("#appShell").hidden = false;
 
   applyLanguage();
-  renderAll();
   showPage("dashboard");
 }
 
 function showAuth() {
+  stopTimer();
+  timerRemaining = MODES.focus;
+  currentMode = "focus";
+  document.title = "KEYCLA — Your Study Space";
+
   $("#authScreen").hidden = false;
   $("#appShell").hidden = true;
   currentUser = null;
@@ -421,6 +567,8 @@ async function initializeApp() {
 
   const languageSelect = $("#languageSelect");
   if (languageSelect) languageSelect.value = currentLanguage;
+
+  applyLanguage();
 
   if (supabaseClient) {
     const { data: result, error } = await supabaseClient.auth.getSession();
@@ -450,8 +598,8 @@ async function initializeApp() {
     });
   } else {
     // Local demonstration mode.
-    data = readLocalData();
     currentUser = null;
+    data = readLocalData();
     showApplication();
   }
 }
@@ -550,86 +698,33 @@ document.addEventListener("keydown", (event) => {
 // 8. LANGUAGE
 // ==========================================
 
+// Every translatable element in index.html carries a data-i18n key
+// (text) or data-i18n-placeholder key (placeholder).
 function applyLanguage() {
   document.documentElement.lang = currentLanguage;
 
   const select = $("#languageSelect");
   if (select) select.value = currentLanguage;
 
-  const translations = {
-    en: {
-      "Home": "Home",
-      "My Tasks": "My Tasks",
-      "My Timetable": "My Timetable",
-      "Goals & Progress": "Goals & Progress",
-      "Focus Room": "Focus Room",
-      "Weekly Reflection": "Weekly Reflection",
-      "Settings": "Settings",
-      "Log out": "Log out",
-      "Your day, at a glance.": "Your day, at a glance.",
-      "Tasks that need attention": "Tasks that need attention",
-      "Today's timetable": "Today's timetable",
-      "Stay organized": "Stay organized"
-    },
-    fr: {
-      "Home": "Accueil",
-      "My Tasks": "Mes tâches",
-      "My Timetable": "Mon emploi du temps",
-      "Goals & Progress": "Objectifs et progrès",
-      "Focus Room": "Salle de concentration",
-      "Weekly Reflection": "Réflexion hebdomadaire",
-      "Settings": "Paramètres",
-      "Log out": "Déconnexion",
-      "Your day, at a glance.": "Ta journée en un coup d'œil.",
-      "Tasks that need attention": "Les tâches à traiter",
-      "Today's timetable": "Programme du jour",
-      "Stay organized": "Reste organisé"
-    }
-  };
-
-  const map = translations[currentLanguage];
-
-  // Translate navigation labels without changing their icons.
-  $$(".nav-link").forEach(button => {
-    const label = button.querySelector("span:not(.nav-icon):not(.nav-count)");
-    if (label) {
-      const original = label.dataset.original || label.textContent.trim();
-      label.dataset.original = original;
-      label.textContent = map[original] || original;
-    }
+  $$("[data-i18n]").forEach((element) => {
+    element.textContent = t(element.dataset.i18n);
   });
 
-  const textNodes = document.createTreeWalker(
-    document.querySelector(".content-area"),
-    NodeFilter.SHOW_TEXT
-  );
+  $$("[data-i18n-placeholder]").forEach((element) => {
+    element.placeholder = t(element.dataset.i18nPlaceholder);
+  });
 
-  const replacements = {
-    "Your day, at a glance.": "Your day, at a glance.",
-    "Tasks that need attention": "Tasks that need attention",
-    "Today's timetable": "Today's timetable"
-  };
-
-  if (currentLanguage === "fr") {
-    Object.assign(replacements, {
-      "Your day, at a glance.": "Ta journée en un coup d'œil.",
-      "Tasks that need attention": "Les tâches à traiter",
-      "Today's timetable": "Programme du jour"
-    });
-  }
-
-  let node;
-  while ((node = textNodes.nextNode())) {
-    const value = node.nodeValue.trim();
-    if (replacements[value]) {
-      node.nodeValue = node.nodeValue.replace(value, replacements[value]);
-    }
+  // Dynamic labels that depend on the timer state.
+  if ($("#timerStart")) {
+    $("#timerStart").textContent = timerRunning
+      ? t("pause")
+      : (timerRemaining < timerFullDuration() ? t("resume") : t("start"));
   }
 
   renderAll();
 }
 
-$("#languageSelect")?.addEventListener("change", async (event) => {
+$("#languageSelect")?.addEventListener("change", (event) => {
   currentLanguage = event.target.value === "fr" ? "fr" : "en";
   localStorage.setItem("keycla-language", currentLanguage);
   applyLanguage();
@@ -655,7 +750,9 @@ function renderProfile() {
   $("#topAvatar").textContent = avatar;
   $("#workspaceAvatar").textContent = initials(workspace);
 
-  $("#bannerTitle").textContent = `Hello, ${name.split(" ")[0]}!`;
+  const firstName = name.split(" ")[0];
+  $("#bannerTitle").textContent =
+    currentLanguage === "fr" ? `Bonjour, ${firstName} !` : `Hello, ${firstName}!`;
 
   $("#userNameInput").value = name;
   $("#workspaceInput").value = workspace;
@@ -666,7 +763,7 @@ function renderProfile() {
   const banner = $("#welcomeBanner");
   banner.className = `welcome-banner banner-${profile.banner || "plum"}`;
 
-  if (profile.bannerImage) {
+  if (profile.bannerImage && isSafeImageURL(profile.bannerImage)) {
     banner.style.backgroundImage = `linear-gradient(90deg, rgba(45,25,40,.8), rgba(45,25,40,.25)), url("${profile.bannerImage}")`;
     banner.style.backgroundSize = "cover";
     banner.style.backgroundPosition = "center";
@@ -724,7 +821,7 @@ $("#saveProfile")?.addEventListener("click", async () => {
   data.profile.dailyGoal = dailyGoal;
 
   await saveData();
-  renderProfile();
+  renderAll();
   toast(t("profileSaved"));
 });
 
@@ -748,8 +845,8 @@ $$(".banner-swatch").forEach(swatch => {
 $("#saveAppearance")?.addEventListener("click", async () => {
   const image = $("#bannerImageInput").value.trim();
 
-  if (image && !image.startsWith("https://")) {
-    toast("Please use a secure HTTPS image URL.");
+  if (!isSafeImageURL(image)) {
+    toast("Please use a secure HTTPS image URL (no spaces, quotes or parentheses).");
     return;
   }
 
@@ -856,7 +953,6 @@ function renderTasks() {
 
   const search = ($("#taskSearch")?.value || "").toLowerCase();
   const filter = $("#taskFilter")?.value || "all";
-  const subject = $("#subjectFilter")?.value || "all";
 
   const subjects = [...new Set(data.tasks.map(task => task.subject).filter(Boolean))];
 
@@ -864,7 +960,7 @@ function renderTasks() {
   const currentSubject = subjectSelect.value;
 
   subjectSelect.innerHTML =
-    `<option value="all">${escapeHTML(t("allTasks")) === "Toutes les tâches" ? "Toutes les matières" : "All subjects"}</option>` +
+    `<option value="all">${escapeHTML(t("allSubjects"))}</option>` +
     subjects.map(item =>
       `<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`
     ).join("");
@@ -924,8 +1020,8 @@ function renderTasks() {
         ${escapeHTML(task.priority || "medium")}
       </span>
 
-      <button class="icon-button" data-task-edit="${escapeHTML(task.id)}" aria-label="Edit task">✎</button>
-      <button class="icon-button" data-task-delete="${escapeHTML(task.id)}" aria-label="Delete task">×</button>
+      <button type="button" class="icon-button" data-task-edit="${escapeHTML(task.id)}" aria-label="Edit task">✎</button>
+      <button type="button" class="icon-button" data-task-delete="${escapeHTML(task.id)}" aria-label="Delete task">×</button>
     </article>
   `).join("");
 }
@@ -1032,9 +1128,10 @@ function renderTimetable() {
 
     return `
       <div class="timetable-day">
-        <h4>${escapeHTML(day)}</h4>
+        <h4>${escapeHTML(dayLabel(day))}</h4>
         ${sessions.map(session => `
           <button
+            type="button"
             class="schedule-item"
             data-session-edit="${escapeHTML(session.id)}"
             style="width:100%;text-align:left"
@@ -1152,8 +1249,8 @@ function renderGoals() {
         </div>
 
         <div class="goal-actions" style="display:flex;gap:8px;margin-top:15px">
-          <button class="secondary-button" data-goal-edit="${escapeHTML(goal.id)}">Edit</button>
-          <button class="danger-button" data-goal-delete="${escapeHTML(goal.id)}">Delete</button>
+          <button type="button" class="secondary-button" data-goal-edit="${escapeHTML(goal.id)}">${escapeHTML(t("edit"))}</button>
+          <button type="button" class="danger-button" data-goal-delete="${escapeHTML(goal.id)}">${escapeHTML(t("delete"))}</button>
         </div>
       </article>
     `;
@@ -1186,22 +1283,34 @@ $("#goalList")?.addEventListener("click", async (event) => {
 // 13. FOCUS ROOM
 // ==========================================
 
+function timerFullDuration() {
+  return MODES[currentMode] || MODES.focus;
+}
+
 function updateTimerDisplay() {
   const minutes = Math.floor(timerRemaining / 60);
   const seconds = timerRemaining % 60;
 
-  $("#timerDisplay").textContent =
+  const text =
     `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
-  document.title = `${$("#timerDisplay").textContent} — KEYCLA`;
+  const display = $("#timerDisplay");
+  if (display) display.textContent = text;
+
+  document.title = timerRunning
+    ? `${text} — KEYCLA`
+    : "KEYCLA — Your Study Space";
 }
 
+// Fully stops the timer and clears the end time.
 function stopTimer() {
   clearInterval(timerInterval);
   timerInterval = null;
   timerRunning = false;
+  timerEnd = null;
 
-  $("#timerStart").textContent = t("start");
+  const button = $("#timerStart");
+  if (button) button.textContent = t("start");
 }
 
 function setTimerMode(mode) {
@@ -1223,40 +1332,60 @@ $$(".mode-button").forEach(button => {
   });
 });
 
+async function finishTimer() {
+  const wasFocus = currentMode === "focus";
+  stopTimer();
+
+  if (wasFocus && data) {
+    data.focus.sessions++;
+    data.focus.minutes += MODES.focus / 60;
+    await saveData();
+    renderFocusStats();
+    renderDashboard();
+  }
+
+  toast(t("focusComplete"));
+  setTimerMode(currentMode);
+}
+
+// The remaining time comes from the real clock, so it stays
+// accurate even when the browser slows down a background tab.
+function tick() {
+  timerRemaining = Math.max(
+    0,
+    Math.round((timerEnd - Date.now()) / 1000)
+  );
+
+  updateTimerDisplay();
+
+  if (timerRemaining <= 0) {
+    finishTimer();
+  }
+}
+
 $("#timerStart")?.addEventListener("click", () => {
   if (timerRunning) {
-    stopTimer();
+    // Pause: keep timerRemaining, drop the end time.
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerRunning = false;
+    timerEnd = null;
     $("#timerStart").textContent = t("resume");
+    updateTimerDisplay();
     return;
   }
 
   timerRunning = true;
+  timerEnd = Date.now() + timerRemaining * 1000;
   $("#timerStart").textContent = t("pause");
 
-  timerInterval = setInterval(async () => {
-    timerRemaining--;
-
-    updateTimerDisplay();
-
-    if (timerRemaining <= 0) {
-      stopTimer();
-
-      if (currentMode === "focus") {
-        data.focus.sessions++;
-        data.focus.minutes += 25;
-        await saveData();
-        renderFocusStats();
-      }
-
-      toast(t("focusComplete"));
-      setTimerMode(currentMode);
-    }
-  }, 1000);
+  timerInterval = setInterval(tick, 500);
+  updateTimerDisplay();
 });
 
 $("#timerReset")?.addEventListener("click", () => {
   stopTimer();
-  timerRemaining = MODES[currentMode];
+  timerRemaining = timerFullDuration();
   updateTimerDisplay();
 });
 
@@ -1302,7 +1431,7 @@ function renderJournal() {
           <p><b>Went well:</b> ${escapeHTML(item.wins || "—")}</p>
           <p><b>Challenges:</b> ${escapeHTML(item.challenges || "—")}</p>
           <p><b>Next steps:</b> ${escapeHTML(item.next || "—")}</p>
-          <button class="danger-button" data-reflection-delete="${escapeHTML(item.id)}">Delete</button>
+          <button type="button" class="danger-button" data-reflection-delete="${escapeHTML(item.id)}">${escapeHTML(t("delete"))}</button>
         </article>
       `).join("")}
   `;
@@ -1559,6 +1688,7 @@ $("#loginForm")?.addEventListener("submit", async (event) => {
       "Demo mode is active. Your workspace is stored on this device.",
       false
     );
+    currentUser = null;
     data = readLocalData();
     showApplication();
     return;
@@ -1569,7 +1699,7 @@ $("#loginForm")?.addEventListener("submit", async (event) => {
 
   const button = $("#loginForm button[type=submit]");
   button.disabled = true;
-  button.textContent = "Please wait...";
+  button.textContent = t("wait");
 
   const { data: result, error } = await supabaseClient.auth.signInWithPassword({
     email,
@@ -1577,7 +1707,7 @@ $("#loginForm")?.addEventListener("submit", async (event) => {
   });
 
   button.disabled = false;
-  button.textContent = t("loginSuccess") === "Bon retour!" ? "Connexion" : "Log in";
+  button.textContent = t("login");
 
   if (error) {
     setAuthMessage(error.message || t("loginError"), true);
@@ -1608,6 +1738,7 @@ $("#signupForm")?.addEventListener("submit", async (event) => {
   }
 
   if (!supabaseClient) {
+    currentUser = null;
     data = defaults();
     data.profile.name = name;
     await saveData();
@@ -1618,7 +1749,7 @@ $("#signupForm")?.addEventListener("submit", async (event) => {
 
   const button = $("#signupForm button[type=submit]");
   button.disabled = true;
-  button.textContent = "Please wait...";
+  button.textContent = t("wait");
 
   const { data: result, error } = await supabaseClient.auth.signUp({
     email,
@@ -1630,7 +1761,7 @@ $("#signupForm")?.addEventListener("submit", async (event) => {
   });
 
   button.disabled = false;
-  button.textContent = "Create account";
+  button.textContent = t("createAccount");
 
   if (error) {
     setAuthMessage(error.message || t("signupError"), true);
@@ -1638,9 +1769,7 @@ $("#signupForm")?.addEventListener("submit", async (event) => {
   }
 
   if (result?.session && result?.user) {
-    data = defaults();
-    data.profile.name = name;
-    await loadStudentData(result.user);
+    await loadStudentData(result.user, name);
   } else {
     setAuthMessage(t("accountCreated"));
   }
@@ -1691,4 +1820,3 @@ $("#logoutButton")?.addEventListener("click", async () => {
 // ==========================================
 
 document.addEventListener("DOMContentLoaded", initializeApp);
-
