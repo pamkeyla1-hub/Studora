@@ -1824,16 +1824,28 @@ const googleLoginButton = document.getElementById("googleLogin");
 
 if (googleLoginButton) {
   googleLoginButton.addEventListener("click", async () => {
-    const { error } = await sb.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: window.location.origin
-      }
-    });
+    if (!supabaseClient) {
+      alert("Supabase is not configured. Please check your settings.");
+      return;
+    }
 
-    if (error) {
-      alert("Google login error: " + error.message);
+    googleLoginButton.disabled = true;
+
+    try {
+      const { error } = await supabaseClient.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+
+      if (error) {
+        alert("Google login error: " + error.message);
+        googleLoginButton.disabled = false;
+      }
+    } catch (error) {
+      alert("Error: " + error.message);
+      googleLoginButton.disabled = false;
     }
   });
 }
-console.log("KEYCLA Google button:", googleLoginButton);
