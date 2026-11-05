@@ -1,806 +1,1694 @@
-/* ==========================================  
-KEYCLA — Main JavaScript
-   Your space. Your pace. Your progress.
-   ========================================== */
+// ==========================================
+// KEYCLA — Main JavaScript
+// Your space. Your pace. Your progress.
+// ==========================================
 
-// 1) Paste your Supabase project values here.
-const SUPABASE_URL ="https://wlvdoekstcisatqiqqow.supabase.co"; 
-const SUPABASE_KEY ="sb_publishable__9cPey1XsdLTx5gBPY0Q5w_5Dv5owQU";  
+// 1. SUPABASE CONFIGURATION
+// Keep your existing project URL and publishable key here.
+// Never use your service_role / secret key in frontend code.
+
+const SUPABASE_URL = "";
+const SUPABASE_KEY = "";
+
 const TABLE = "studyspace_data";
-const LOCAL_KEY = "Keycla-data-v1";
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-const MODES = { focus: 25, short: 5, long: 15 };
 
-const sb = (SUPABASE_URL && SUPABASE_KEY && window.supabase)
-  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
-  : null;
+// Keep the previous key so existing local data can be recovered.
+const LOCAL_KEY = "studora-data-v1";
+const NEW_LOCAL_KEY = "keycla-data-v1";
 
-/* ---------- Helpers ---------- */
-const $ = (selector, root = document) => root.querySelector(selector);
-const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+const DAYS = [
+  "Monday", "Tuesday", "Wednesday", "Thursday",
+  "Friday", "Saturday", "Sunday"
+];
 
-function el(tag, className, text) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
-}
+const MODES = {
+  focus: 25 * 60,
+  short: 5 * 60,
+  long: 15 * 60
+};
 
-function iconButton(symbol, label, onClick) {
-  const button = el("button", "icon-button", symbol);
-  button.type = "button";
-  button.setAttribute("aria-label", label);
-  button.addEventListener("click", onClick);
-  return button;
+const LANGUAGES = {
+  en: {
+    home: "Home",
+    tasks: "My Tasks",
+    timetable: "My Timetable",
+    goals: "Goals & Progress",
+    focus: "Focus Room",
+    journal: "Weekly Reflection",
+    settings: "Settings",
+    logout: "Log out",
+    newTask: "New task",
+    addSession: "Add session",
+    newGoal: "New goal",
+    save: "Save",
+    cancel: "Cancel",
+    delete: "Delete",
+    edit: "Edit",
+    completed: "Completed",
+    pending: "Pending",
+    allTasks: "All tasks",
+    search: "Search tasks...",
+    today: "Today's timetable",
+    priorities: "Tasks that need attention",
+    seeAll: "See all",
+    noTasks: "No tasks yet. Add your first task!",
+    noSchedule: "No sessions planned for today.",
+    noGoals: "No goals yet. Create your first goal!",
+    noReflections: "No reflections saved yet.",
+    taskSaved: "Task saved successfully.",
+    taskDeleted: "Task deleted.",
+    sessionSaved: "Session saved successfully.",
+    goalSaved: "Goal saved successfully.",
+    reflectionSaved: "Reflection saved.",
+    profileSaved: "Profile updated.",
+    appearanceSaved: "Appearance updated.",
+    preferencesSaved: "Preferences saved.",
+    dataExported: "Backup exported.",
+    dataImported: "Backup imported.",
+    dataReset: "Your local workspace has been reset.",
+    confirmDelete: "Are you sure you want to delete this item?",
+    confirmReset: "Reset all your workspace data? This cannot be undone.",
+    start: "Start",
+    pause: "Pause",
+    resume: "Resume",
+    focusComplete: "Focus session completed!",
+    loginRequired: "Please log in to continue.",
+    invalidEmail: "Please enter a valid email address.",
+    passwordMismatch: "Your passwords do not match.",
+    passwordShort: "Your password must contain at least 8 characters.",
+    accountCreated: "Account created. Check your email if confirmation is required.",
+    loginSuccess: "Welcome back!",
+    loginError: "Unable to log in. Check your email and password.",
+    signupError: "Unable to create your account.",
+    emailRequired: "Please enter your email address.",
+    recoverySent: "Password recovery instructions have been sent if the address is registered.",
+    passwordUpdated: "Your password has been updated.",
+    language: "Language"
+  },
+
+  fr: {
+    home: "Accueil",
+    tasks: "Mes tâches",
+    timetable: "Mon emploi du temps",
+    goals: "Objectifs et progrès",
+    focus: "Salle de concentration",
+    journal: "Réflexion hebdomadaire",
+    settings: "Paramètres",
+    logout: "Déconnexion",
+    newTask: "Nouvelle tâche",
+    addSession: "Ajouter une séance",
+    newGoal: "Nouvel objectif",
+    save: "Enregistrer",
+    cancel: "Annuler",
+    delete: "Supprimer",
+    edit: "Modifier",
+    completed: "Terminées",
+    pending: "En attente",
+    allTasks: "Toutes les tâches",
+    search: "Rechercher une tâche...",
+    today: "Programme du jour",
+    priorities: "Tâches à traiter",
+    seeAll: "Tout voir",
+    noTasks: "Aucune tâche pour le moment. Ajoute ta première tâche !",
+    noSchedule: "Aucune séance prévue aujourd'hui.",
+    noGoals: "Aucun objectif. Crée ton premier objectif !",
+    noReflections: "Aucune réflexion enregistrée.",
+    taskSaved: "Tâche enregistrée.",
+    taskDeleted: "Tâche supprimée.",
+    sessionSaved: "Séance enregistrée.",
+    goalSaved: "Objectif enregistré.",
+    reflectionSaved: "Réflexion enregistrée.",
+    profileSaved: "Profil mis à jour.",
+    appearanceSaved: "Apparence mise à jour.",
+    preferencesSaved: "Préférences enregistrées.",
+    dataExported: "Sauvegarde exportée.",
+    dataImported: "Sauvegarde importée.",
+    dataReset: "Ton espace local a été réinitialisé.",
+    confirmDelete: "Veux-tu vraiment supprimer cet élément ?",
+    confirmReset: "Réinitialiser toutes les données ? Cette action est irréversible.",
+    start: "Démarrer",
+    pause: "Pause",
+    resume: "Reprendre",
+    focusComplete: "Séance de concentration terminée !",
+    loginRequired: "Connecte-toi pour continuer.",
+    invalidEmail: "Saisis une adresse e-mail valide.",
+    passwordMismatch: "Les mots de passe ne correspondent pas.",
+    passwordShort: "Le mot de passe doit contenir au moins 8 caractères.",
+    accountCreated: "Compte créé. Vérifie ton e-mail si une confirmation est nécessaire.",
+    loginSuccess: "Bon retour !",
+    loginError: "Connexion impossible. Vérifie ton e-mail et ton mot de passe.",
+    signupError: "Impossible de créer le compte.",
+    emailRequired: "Saisis ton adresse e-mail.",
+    recoverySent: "Si cette adresse est enregistrée, les instructions ont été envoyées.",
+    passwordUpdated: "Ton mot de passe a été mis à jour.",
+    language: "Langue"
+  }
+};
+
+
+// ==========================================
+// 2. APPLICATION STATE
+// ==========================================
+
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => [...document.querySelectorAll(selector)];
+
+let supabaseClient = null;
+let currentUser = null;
+let data = null;
+let currentLanguage = localStorage.getItem("keycla-language") || "en";
+
+let timerInterval = null;
+let timerRemaining = MODES.focus;
+let currentMode = "focus";
+let timerRunning = false;
+
+
+// ==========================================
+// 3. UTILITIES
+// ==========================================
+
+function t(key) {
+  return LANGUAGES[currentLanguage]?.[key] || LANGUAGES.en[key] || key;
 }
 
 function today() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return new Date().toISOString().slice(0, 10);
+}
+
+function makeId() {
+  return crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[char]);
+}
+
+function formatDate(value) {
+  if (!value) return "";
+  const date = new Date(`${value}T00:00:00`);
+  return date.toLocaleDateString(
+    currentLanguage === "fr" ? "fr-FR" : "en-GB",
+    { day: "numeric", month: "short", year: "numeric" }
+  );
+}
+
+function formatTime(value) {
+  return value || "";
+}
+
+function initials(name) {
+  return String(name || "K")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(part => part[0]?.toUpperCase() || "")
+    .join("") || "K";
 }
 
 function toast(message) {
-  const node = $("#toast");
-  node.textContent = message;
-  node.classList.add("show");
-  clearTimeout(toast.timer);
-  toast.timer = setTimeout(() => node.classList.remove("show"), 2500);
+  const element = $("#toast");
+  if (!element) return;
+
+  element.textContent = message;
+  element.classList.add("show");
+
+  clearTimeout(toast.timeout);
+  toast.timeout = setTimeout(() => {
+    element.classList.remove("show");
+  }, 2800);
 }
 
-/* ---------- Data ---------- */
+function setAuthMessage(message, isError = false) {
+  const element = $("#authMessage");
+  if (!element) return;
+
+  element.textContent = message;
+  element.style.color = isError ? "#B96E70" : "var(--primary)";
+}
+
 function defaults() {
   return {
     profile: {
-      name: "Student", workspace: "My Workspace", theme: "light",
-      accent: "#8878c9", banner: "lavender", bannerImage: "", dailyGoal: 120
+      name: "Student",
+      workspace: "My Workspace",
+      theme: "light",
+      accent: "#542D46",
+      banner: "plum",
+      bannerImage: "",
+      dailyGoal: 120
     },
-    tasks: [], timetable: [], goals: [], reflections: [],
+
+    tasks: [],
+    timetable: [],
+    goals: [],
+    reflections: [],
+
     intention: "",
-    focus: { date: today(), sessions: 0, minutes: 0 }
-  };
-}
 
-function normalize(raw) {
-  const base = defaults();
-  const source = raw && typeof raw === "object" ? raw : {};
-  const merged = {
-    ...base, ...source,
-    profile: { ...base.profile, ...(source.profile || {}) },
-    focus: { ...base.focus, ...(source.focus || {}) }
-  };
-  ["tasks", "timetable", "goals", "reflections"].forEach(key => {
-    if (!Array.isArray(merged[key])) merged[key] = [];
-  });
-  if (merged.focus.date !== today()) merged.focus = { date: today(), sessions: 0, minutes: 0 };
-  return merged;
-}
-
-let data = defaults();
-let currentUser = null;
-let saveTimer = null;
-
-function saveData() {
-  if (!currentUser) return;
-  try {
-    localStorage.setItem(`${LOCAL_KEY}-${currentUser.id}`, JSON.stringify(data));
-  } catch (error) {
-    console.warn("Local backup failed:", error);
-  }
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(cloudSave, 400);
-}
-
-async function cloudSave() {
-  if (!sb || !currentUser) return;
-  const { error } = await sb.from(TABLE).upsert(
-    { user_id: currentUser.id, data },
-    { onConflict: "user_id" }
-  );
-  if (error) {
-    console.error("Cloud save error:", error.message);
-    toast("Could not sync your data. Please try again.");
-  }
-}
-
-/* ---------- Navigation & modals ---------- */
-function showPage(name) {
-  $$(".page").forEach(page => page.classList.toggle("active", page.id === `page-${name}`));
-  $$(".nav-link").forEach(link => link.classList.toggle("active", link.dataset.page === name));
-  $("#sidebar").classList.remove("open");
-  window.scrollTo({ top: 0 });
-}
-
-function openModal(id) {
-  const modal = $(`#${id}`);
-  modal.classList.add("open");
-  modal.setAttribute("aria-hidden", "false");
-  const first = $("input:not([type=hidden]), textarea", modal);
-  if (first) setTimeout(() => first.focus(), 30);
-}
-
-function closeModal(id) {
-  const modal = $(`#${id}`);
-  modal.classList.remove("open");
-  modal.setAttribute("aria-hidden", "true");
-}
-
-document.addEventListener("click", event => {
-  const page = event.target.closest("[data-page]");
-  if (page) showPage(page.dataset.page);
-  const close = event.target.closest("[data-close]");
-  if (close) closeModal(close.dataset.close);
-  if (event.target.classList.contains("modal-overlay")) closeModal(event.target.id);
-});
-
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") $$(".modal-overlay.open").forEach(modal => closeModal(modal.id));
-});
-
-$("#menuToggle").addEventListener("click", () => $("#sidebar").classList.add("open"));
-$("#closeSidebar").addEventListener("click", () => $("#sidebar").classList.remove("open"));
-$("#editWorkspace").addEventListener("click", () => {
-  showPage("settings");
-  $("#workspaceInput").focus();
-});
-
-/* ---------- Profile & appearance ---------- */
-function renderProfile() {
-  const p = data.profile;
-  const initial = (p.name.trim()[0] || "S").toUpperCase();
-  $("#sidebarUserName").textContent = p.name;
-  $("#workspaceName").textContent = p.workspace;
-  $("#bannerTitle").textContent = `Hello, ${p.name}`;
-  ["#sidebarAvatar", "#topAvatar"].forEach(id => { $(id).textContent = initial; });
-  $("#workspaceAvatar").textContent = (p.workspace.trim()[0] || "S").toUpperCase();
-
-  const root = document.documentElement.style;
-  root.setProperty("--accent", p.accent);
-  root.setProperty("--accent-dark", `color-mix(in srgb, ${p.accent} 80%, black)`);
-  root.setProperty("--accent-soft", `color-mix(in srgb, ${p.accent} 15%, white)`);
-
-  document.body.classList.toggle("dark-theme", p.theme === "dark");
-  $("#themeToggle").textContent = p.theme === "dark" ? "☀" : "☾";
-
-  const banner = $("#welcomeBanner");
-  banner.className = `welcome-banner banner-${p.banner}`;
-  const hasImage = /^https:\/\//i.test(p.bannerImage || "");
-  banner.style.backgroundImage = hasImage ? `url("${encodeURI(p.bannerImage)}")` : "";
-  banner.style.backgroundSize = "cover";
-  banner.style.backgroundPosition = "center";
-  $(".banner-content", banner).classList.toggle("has-image", hasImage);
-
-  $$(".color-swatch").forEach(s => s.classList.toggle("selected", s.dataset.color === p.accent));
-  $$(".banner-swatch").forEach(s => s.classList.toggle("selected", s.dataset.banner === p.banner));
-  $("#todayDate").textContent = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
-  $("#journalDate").textContent = new Date().toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" });
-}
-
-function fillSettings() {
-  const p = data.profile;
-  $("#userNameInput").value = p.name;
-  $("#workspaceInput").value = p.workspace;
-  $("#dailyGoalInput").value = p.dailyGoal;
-  $("#bannerImageInput").value = p.bannerImage || "";
-  $("#themeSelect").value = p.theme;
-  $("#focusIntention").value = data.intention || "";
-}
-
-$("#saveProfile").addEventListener("click", () => {
-  data.profile.name = $("#userNameInput").value.trim() || "Student";
-  data.profile.workspace = $("#workspaceInput").value.trim() || "My Workspace";
-  data.profile.dailyGoal = Math.min(720, Math.max(5, Number($("#dailyGoalInput").value) || 120));
-  saveData(); renderAll(); toast("Profile saved.");
-});
-
-$$(".color-swatch").forEach(swatch => swatch.addEventListener("click", () => {
-  data.profile.accent = swatch.dataset.color; renderProfile();
-}));
-$$(".banner-swatch").forEach(swatch => swatch.addEventListener("click", () => {
-  data.profile.banner = swatch.dataset.banner; renderProfile();
-}));
-
-$("#saveAppearance").addEventListener("click", () => {
-  const url = $("#bannerImageInput").value.trim();
-  if (url && !/^https:\/\//i.test(url)) { toast("The banner image URL must start with https://"); return; }
-  data.profile.bannerImage = url;
-  saveData(); renderProfile(); toast("Appearance saved.");
-});
-
-$("#savePreferences").addEventListener("click", () => {
-  data.profile.theme = $("#themeSelect").value;
-  saveData(); renderProfile(); toast("Preferences saved.");
-});
-
-$("#themeToggle").addEventListener("click", () => {
-  data.profile.theme = data.profile.theme === "dark" ? "light" : "dark";
-  $("#themeSelect").value = data.profile.theme;
-  saveData(); renderProfile();
-});
-
-/* ---------- Tasks ---------- */
-function openTask(task) {
-  $("#taskModalTitle").textContent = task ? "Edit task" : "New task";
-  $("#taskId").value = task ? task.id : "";
-  $("#taskTitle").value = task ? task.title : "";
-  $("#taskSubject").value = task ? task.subject : "";
-  $("#taskDue").value = task ? task.dueDate : "";
-  $("#taskPriority").value = task ? task.priority : "medium";
-  $("#taskType").value = task ? task.type : "homework";
-  $("#taskNotes").value = task ? task.notes : "";
-  openModal("taskModal");
-}
-
-$("#taskForm").addEventListener("submit", event => {
-  event.preventDefault();
-  const id = $("#taskId").value;
-  const fields = {
-    title: $("#taskTitle").value.trim(),
-    subject: $("#taskSubject").value.trim() || "General",
-    dueDate: $("#taskDue").value,
-    priority: $("#taskPriority").value,
-    type: $("#taskType").value,
-    notes: $("#taskNotes").value.trim()
-  };
-  if (!fields.title) { toast("Please enter a task name."); return; }
-  const existing = id && data.tasks.find(t => String(t.id) === id);
-  if (existing) Object.assign(existing, fields);
-  else data.tasks.push({ id: Date.now(), completed: false, ...fields });
-  saveData(); renderAll(); closeModal("taskModal");
-  toast(existing ? "Task updated." : "Task added.");
-});
-
-function renderTasks() {
-  const subjects = [...new Set(data.tasks.map(t => t.subject))].sort();
-  const subjectFilter = $("#subjectFilter");
-  const previous = subjectFilter.value;
-  subjectFilter.replaceChildren(new Option("All subjects", "all"), ...subjects.map(s => new Option(s, s)));
-  subjectFilter.value = subjects.includes(previous) ? previous : "all";
-
-  const query = $("#taskSearch").value.trim().toLowerCase();
-  const status = $("#taskFilter").value;
-  const subject = subjectFilter.value;
-
-  const visible = data.tasks.filter(t =>
-    (status === "all" || (status === "completed") === t.completed) &&
-    (subject === "all" || t.subject === subject) &&
-    (!query || `${t.title} ${t.subject} ${t.notes}`.toLowerCase().includes(query))
-  );
-
-  const list = $("#taskList");
-  list.replaceChildren();
-  if (!visible.length) {
-    list.append(el("div", "empty-state", data.tasks.length ? "No tasks match your filters." : "No tasks yet. Add your first task to get started."));
-    return;
-  }
-
-  visible.forEach(task => {
-    const card = el("div", `task-card${task.completed ? " is-completed" : ""}`);
-    const check = el("input", "task-check");
-    check.type = "checkbox";
-    check.checked = task.completed;
-    check.setAttribute("aria-label", `Mark "${task.title}" as done`);
-    check.addEventListener("change", () => { task.completed = check.checked; saveData(); renderAll(); });
-
-    const main = el("div", "task-main");
-    main.append(el("strong", "", task.title),
-      el("small", "", [task.subject, task.dueDate && `Due ${task.dueDate}`].filter(Boolean).join(" · ")));
-
-    const badges = el("div", "task-badges");
-    badges.append(el("span", `task-badge ${task.priority}`, task.priority), el("span", "task-badge", task.type));
-
-    const actions = el("div", "task-actions");
-    actions.append(
-      iconButton("✎", "Edit task", () => openTask(task)),
-      iconButton("×", "Delete task", () => {
-        data.tasks = data.tasks.filter(t => t.id !== task.id);
-        saveData(); renderAll(); toast("Task deleted.");
-      })
-    );
-    card.append(check, main, badges, actions);
-    list.append(card);
-  });
-}
-
-$("#addTaskButton").addEventListener("click", () => openTask());
-$("#quickAddTask").addEventListener("click", () => openTask());
-$("#taskSearch").addEventListener("input", renderTasks);
-$("#taskFilter").addEventListener("change", renderTasks);
-$("#subjectFilter").addEventListener("change", renderTasks);
-
-/* ---------- Timetable ---------- */
-function openSession(session) {
-  $("#scheduleModalTitle").textContent = session ? "Edit session" : "Add a session";
-  $("#scheduleId").value = session ? session.id : "";
-  $("#scheduleSubject").value = session ? session.subject : "";
-  $("#scheduleDay").value = session ? session.day : DAYS[(new Date().getDay() + 6) % 7];
-  $("#scheduleStart").value = session ? session.start : "17:00";
-  $("#scheduleEnd").value = session ? session.end : "18:00";
-  $("#scheduleColor").value = session ? session.color : "";
-  $("#scheduleDelete").hidden = !session;
-  openModal("scheduleModal");
-}
-
-$("#scheduleForm").addEventListener("submit", event => {
-  event.preventDefault();
-  const id = $("#scheduleId").value;
-  const fields = {
-    subject: $("#scheduleSubject").value.trim(),
-    day: $("#scheduleDay").value,
-    start: $("#scheduleStart").value,
-    end: $("#scheduleEnd").value,
-    color: $("#scheduleColor").value
-  };
-  if (!fields.subject) { toast("Please enter a session name."); return; }
-  if (fields.end <= fields.start) { toast("The end time must be after the start time."); return; }
-  const existing = id && data.timetable.find(s => String(s.id) === id);
-  if (existing) Object.assign(existing, fields);
-  else data.timetable.push({ id: Date.now(), ...fields });
-  saveData(); renderAll(); closeModal("scheduleModal");
-  toast(existing ? "Session updated." : "Session added.");
-});
-
-$("#scheduleDelete").addEventListener("click", () => {
-  const id = $("#scheduleId").value;
-  data.timetable = data.timetable.filter(s => String(s.id) !== id);
-  saveData(); renderAll(); closeModal("scheduleModal"); toast("Session deleted.");
-});
-
-function renderTimetable() {
-  const grid = $("#timetableGrid");
-  grid.replaceChildren();
-  DAYS.forEach(day => {
-    const column = el("div", "day-column");
-    column.append(el("div", "day-title", day.slice(0, 3).toUpperCase()));
-    data.timetable
-      .filter(s => s.day === day)
-      .sort((a, b) => a.start.localeCompare(b.start))
-      .forEach(session => {
-        const block = el("button", `schedule-block ${session.color || ""}`.trim());
-        block.type = "button";
-        block.append(el("strong", "", session.subject), el("small", "", `${session.start} – ${session.end}`));
-        block.addEventListener("click", () => openSession(session));
-        column.append(block);
-      });
-    grid.append(column);
-  });
-}
-
-$("#addScheduleButton").addEventListener("click", () => openSession());
-$("#quickAddSession").addEventListener("click", () => openSession());
-
-/* ---------- Goals ---------- */
-function openGoal(goal) {
-  $("#goalModalTitle").textContent = goal ? "Edit goal" : "Create a goal";
-  $("#goalId").value = goal ? goal.id : "";
-  $("#goalTitle").value = goal ? goal.title : "";
-  $("#goalDescription").value = goal ? goal.description : "";
-  $("#goalTarget").value = goal ? goal.target : 10;
-  $("#goalUnit").value = goal ? goal.unit : "sessions";
-  $("#goalCurrent").value = goal ? goal.progress : 0;
-  openModal("goalModal");
-}
-
-$("#goalForm").addEventListener("submit", event => {
-  event.preventDefault();
-  const id = $("#goalId").value;
-  const target = Math.max(1, Number($("#goalTarget").value) || 1);
-  const fields = {
-    title: $("#goalTitle").value.trim(),
-    description: $("#goalDescription").value.trim(),
-    target,
-    unit: $("#goalUnit").value.trim() || "sessions",
-    progress: Math.min(target, Math.max(0, Number($("#goalCurrent").value) || 0))
-  };
-  if (!fields.title) { toast("Please enter a goal name."); return; }
-  const existing = id && data.goals.find(g => String(g.id) === id);
-  if (existing) Object.assign(existing, fields);
-  else data.goals.push({ id: Date.now(), ...fields });
-  saveData(); renderAll(); closeModal("goalModal");
-  toast(existing ? "Goal updated." : "Goal created.");
-});
-
-function renderGoals() {
-  const list = $("#goalList");
-  list.replaceChildren();
-  $("#achievedGoals").textContent = data.goals.filter(g => g.progress >= g.target).length;
-
-  if (!data.goals.length) {
-    list.append(el("div", "empty-state", "You have no goals yet. Set your first goal to start tracking progress."));
-    return;
-  }
-
-  data.goals.forEach(goal => {
-    const percent = Math.round((goal.progress / goal.target) * 100);
-    const card = el("article", "goal-card");
-
-    const header = el("div", "goal-card-header");
-    const actions = el("div", "task-actions");
-    actions.append(
-      iconButton("✎", "Edit goal", () => openGoal(goal)),
-      iconButton("×", "Delete goal", () => {
-        data.goals = data.goals.filter(g => g.id !== goal.id);
-        saveData(); renderAll(); toast("Goal deleted.");
-      })
-    );
-    header.append(el("h3", "", goal.title), actions);
-
-    const bar = el("div", "goal-progress");
-    const fill = el("div");
-    fill.style.width = `${percent}%`;
-    bar.append(fill);
-
-    const footer = el("div", "goal-footer");
-    const step = amount => () => {
-      goal.progress = Math.min(goal.target, Math.max(0, goal.progress + amount));
-      saveData(); renderAll();
-    };
-    const buttons = el("div", "task-actions");
-    buttons.append(iconButton("−", "Decrease progress", step(-1)), iconButton("+", "Increase progress", step(1)));
-    footer.append(el("span", "", `${goal.progress} / ${goal.target} ${goal.unit} · ${percent}%`), buttons);
-
-    card.append(header);
-    if (goal.description) card.append(el("p", "", goal.description));
-    card.append(bar, footer);
-    list.append(card);
-  });
-}
-
-$("#addGoalButton").addEventListener("click", () => openGoal());
-$("#quickAddGoal").addEventListener("click", () => openGoal());
-
-/* ---------- Focus timer ---------- */
-let timerMode = "focus";
-let remaining = MODES.focus * 60;
-let endAt = 0;
-let tick = null;
-
-function drawTimer() {
-  const text = `${String(Math.floor(remaining / 60)).padStart(2, "0")}:${String(remaining % 60).padStart(2, "0")}`;
-  $("#timerDisplay").textContent = text;
-  document.title = tick ? `${text} · STUDORA` : "STUDORA — Your Study Space";
-}
-
-function stopTimer() {
-  clearInterval(tick);
-  tick = null;
-  $("#timerStart").textContent = "Start";
-}
-
-function setMode(mode) {
-  timerMode = mode;
-  stopTimer();
-  remaining = MODES[mode] * 60;
-  $$(".mode-button").forEach(b => b.classList.toggle("active", b.dataset.mode === mode));
-  drawTimer();
-}
-
-function finishTimer() {
-  stopTimer();
-  if (timerMode === "focus") {
-    data = normalize(data);
-    data.focus.sessions += 1;
-    data.focus.minutes += MODES.focus;
-    saveData(); renderAll();
-  }
-  toast(timerMode === "focus" ? "Session completed. Well done!" : "Break over. Ready to focus?");
-  remaining = MODES[timerMode] * 60;
-  drawTimer();
-}
-
-$("#timerStart").addEventListener("click", () => {
-  if (tick) { stopTimer(); drawTimer(); return; }
-  endAt = Date.now() + remaining * 1000;
-  tick = setInterval(() => {
-    remaining = Math.max(0, Math.round((endAt - Date.now()) / 1000));
-    drawTimer();
-    if (remaining === 0) finishTimer();
-  }, 250);
-  $("#timerStart").textContent = "Pause";
-});
-
-$("#timerReset").addEventListener("click", () => setMode(timerMode));
-$$(".mode-button").forEach(button => button.addEventListener("click", () => setMode(button.dataset.mode)));
-
-$("#saveIntention").addEventListener("click", () => {
-  data.intention = $("#focusIntention").value.trim();
-  saveData(); toast("Intention saved.");
-});
-
-/* ---------- Weekly reflection ---------- */
-$("#saveJournal").addEventListener("click", () => {
-  const entry = {
-    id: Date.now(), date: today(),
-    wins: $("#journalWins").value.trim(),
-    challenges: $("#journalChallenges").value.trim(),
-    next: $("#journalNext").value.trim()
-  };
-  if (!entry.wins && !entry.challenges && !entry.next) { toast("Write something before saving."); return; }
-  data.reflections.push(entry);
-  ["#journalWins", "#journalChallenges", "#journalNext"].forEach(id => { $(id).value = ""; });
-  saveData(); renderAll();
-  $("#journalMessage").textContent = "Reflection saved.";
-  setTimeout(() => { $("#journalMessage").textContent = ""; }, 2500);
-});
-
-function renderJournal() {
-  const box = $("#journalHistory");
-  box.replaceChildren();
-  box.hidden = !data.reflections.length;
-  if (!data.reflections.length) return;
-  box.append(el("h3", "", "Past reflections"));
-  [...data.reflections].reverse().forEach(entry => {
-    const item = el("div", "journal-entry");
-    const top = el("div", "goal-footer");
-    top.append(el("small", "", entry.date), iconButton("×", "Delete reflection", () => {
-      data.reflections = data.reflections.filter(r => r.id !== entry.id);
-      saveData(); renderAll();
-    }));
-    item.append(top);
-    [["Went well", entry.wins], ["Challenges", entry.challenges], ["Next week", entry.next]].forEach(([label, text]) => {
-      if (!text) return;
-      item.append(el("h4", "", label), el("p", "", text));
-    });
-    box.append(item);
-  });
-}
-
-/* ---------- Dashboard ---------- */
-function renderDashboard() {
-  const total = data.tasks.length;
-  const done = data.tasks.filter(t => t.completed).length;
-  const pending = total - done;
-  const goal = data.profile.dailyGoal;
-  const minutes = data.focus.minutes;
-  const percent = Math.min(100, Math.round((minutes / goal) * 100));
-
-  $("#totalTasks").textContent = total;
-  $("#completedTasks").textContent = done;
-  $("#pendingTasks").textContent = pending;
-  $("#sidebarTaskCount").textContent = pending;
-  $("#dailyTargetValue").textContent = goal;
-  $("#dailyProgressLabel").textContent = `${percent}%`;
-  $("#dailyProgressBar").style.width = `${percent}%`;
-  $("#remainingToday").textContent = Math.max(0, goal - minutes);
-  $("#focusSessions").textContent = data.focus.sessions;
-  $("#focusMinutes").textContent = minutes;
-
-  const tasksBox = $("#dashboardTasks");
-  tasksBox.replaceChildren();
-  const upcoming = data.tasks.filter(t => !t.completed)
-    .sort((a, b) => (a.dueDate || "9999").localeCompare(b.dueDate || "9999")).slice(0, 4);
-  if (!upcoming.length) tasksBox.append(el("div", "empty-state", "Nothing pending. Enjoy the calm."));
-  upcoming.forEach(task => {
-    const row = el("div", "preview-task");
-    const text = el("div");
-    text.append(el("strong", "", task.title), el("small", "", [task.subject, task.dueDate].filter(Boolean).join(" · ")));
-    row.append(el("span", "preview-dot"), text);
-    tasksBox.append(row);
-  });
-
-  const scheduleBox = $("#dashboardSchedule");
-  scheduleBox.replaceChildren();
-  const todayName = DAYS[(new Date().getDay() + 6) % 7];
-  const sessions = data.timetable.filter(s => s.day === todayName).sort((a, b) => a.start.localeCompare(b.start));
-  if (!sessions.length) scheduleBox.append(el("div", "empty-state", "No sessions planned today."));
-  sessions.forEach(session => {
-    const row = el("div", "schedule-preview-item");
-    const text = el("div");
-    text.append(el("strong", "", session.subject), el("small", "", `${session.start} – ${session.end}`));
-    row.append(el("span", "preview-dot"), text);
-    scheduleBox.append(row);
-  });
-}
-
-function renderAll() {
-  renderProfile();
-  renderTasks();
-  renderTimetable();
-  renderGoals();
-  renderJournal();
-  renderDashboard();
-}
-
-/* ---------- Export / import / reset ---------- */
-$("#exportData").addEventListener("click", () => {
-  const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
-  const link = el("a");
-  link.href = url;
-  link.download = "studora-backup.json";
-  link.click();
-  URL.revokeObjectURL(url);
-  toast("Backup exported.");
-});
-
-$("#importDataButton").addEventListener("click", () => $("#importDataInput").click());
-
-$("#importDataInput").addEventListener("change", event => {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const imported = JSON.parse(reader.result);
-      if (!imported || !Array.isArray(imported.tasks) || !Array.isArray(imported.goals)) throw new Error("Invalid backup format.");
-      data = normalize(imported);
-      saveData(); fillSettings(); renderAll();
-      toast("Backup imported.");
-    } catch (error) {
-      console.error(error);
-      toast("This backup file is not valid.");
+    focus: {
+      date: today(),
+      sessions: 0,
+      minutes: 0
     }
   };
-  reader.readAsText(file);
-  event.target.value = "";
-});
-
-$("#resetData").addEventListener("click", () => {
-  if (!confirm("Are you sure? This will erase all your STUDORA data.")) return;
-  const name = data.profile.name;
-  data = defaults();
-  data.profile.name = name;
-  saveData(); fillSettings(); renderAll();
-  toast("STUDORA has been reset.");
-});
-
-/* ---------- Authentication (Supabase) ---------- */
-const authScreen = $("#authScreen");
-const appShell = $("#appShell");
-const authMessage = $("#authMessage");
-
-function showAuthMessage(message, isError = false) {
-  authMessage.textContent = message;
-  authMessage.style.color = isError ? "#d9534f" : "#548b83";
 }
 
-function showAuthForm(name) {
-  $("#loginForm").hidden = name !== "login";
-  $("#signupForm").hidden = name !== "signup";
-  $("#recoveryForm").hidden = name !== "recovery";
-  $("#authTabs").hidden = name === "recovery";
-  $("#loginTab").classList.toggle("active", name === "login");
-  $("#signupTab").classList.toggle("active", name === "signup");
-  showAuthMessage("");
+function normalize(raw = {}) {
+  const base = defaults();
+
+  const result = {
+    ...base,
+    ...raw,
+    profile: {
+      ...base.profile,
+      ...(raw.profile || {})
+    },
+    tasks: Array.isArray(raw.tasks) ? raw.tasks : [],
+    timetable: Array.isArray(raw.timetable) ? raw.timetable : [],
+    goals: Array.isArray(raw.goals) ? raw.goals : [],
+    reflections: Array.isArray(raw.reflections) ? raw.reflections : [],
+    focus: {
+      ...base.focus,
+      ...(raw.focus || {})
+    }
+  };
+
+  if (result.focus.date !== today()) {
+    result.focus = {
+      date: today(),
+      sessions: 0,
+      minutes: 0
+    };
+  }
+
+  return result;
 }
 
-$("#loginTab").addEventListener("click", () => showAuthForm("login"));
-$("#signupTab").addEventListener("click", () => showAuthForm("signup"));
 
-function requireClient() {
-  if (sb) return true;
-  showAuthMessage("Supabase is not configured yet. Add SUPABASE_URL and SUPABASE_KEY at the top of script.js.", true);
-  return false;
+// ==========================================
+// 4. LOCAL STORAGE AND SUPABASE
+// ==========================================
+
+function readLocalData() {
+  try {
+    const newData = localStorage.getItem(NEW_LOCAL_KEY);
+    const oldData = localStorage.getItem(LOCAL_KEY);
+
+    const saved = newData || oldData;
+
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      localStorage.setItem(NEW_LOCAL_KEY, JSON.stringify(parsed));
+      return normalize(parsed);
+    }
+  } catch (error) {
+    console.error("Local data could not be read:", error);
+  }
+
+  return defaults();
 }
 
-async function withButton(form, busyLabel, task) {
-  const button = $('button[type="submit"]', form);
-  const label = button.textContent;
-  button.disabled = true;
-  button.textContent = busyLabel;
-  try { await task(); }
-  catch (error) { showAuthMessage(error.message, true); }
-  finally { button.disabled = false; button.textContent = label; }
+function saveLocalData() {
+  try {
+    localStorage.setItem(NEW_LOCAL_KEY, JSON.stringify(data));
+  } catch (error) {
+    console.error("Local save failed:", error);
+    toast("Unable to save local data. Check your device storage.");
+  }
 }
 
-$("#signupForm").addEventListener("submit", event => {
-  event.preventDefault();
-  if (!requireClient()) return;
-  const name = $("#signupName").value.trim();
-  const email = $("#signupEmail").value.trim();
-  const password = $("#signupPassword").value;
-  if (password.length < 8) { showAuthMessage("Your password must contain at least 8 characters.", true); return; }
-  if (password !== $("#signupConfirmPassword").value) { showAuthMessage("Your passwords do not match.", true); return; }
+async function saveCloudData() {
+  if (!supabaseClient || !currentUser || !data) return;
 
-  withButton(event.target, "Creating account...", async () => {
-    const { data: result, error } = await sb.auth.signUp({
-      email, password,
-      options: { data: { full_name: name }, emailRedirectTo: window.location.origin + window.location.pathname }
+  const { error } = await supabaseClient
+    .from(TABLE)
+    .upsert({
+      user_id: currentUser.id,
+      data: data,
+      updated_at: new Date().toISOString()
+    }, {
+      onConflict: "user_id"
     });
-    if (error) throw error;
-    event.target.reset();
-    if (result.session) return;
-    showAuthForm("login");
-    showAuthMessage("Account created! Check your email to confirm your address, then log in.");
-  });
-});
 
-$("#loginForm").addEventListener("submit", event => {
-  event.preventDefault();
-  if (!requireClient()) return;
-  withButton(event.target, "Logging in...", async () => {
-    const { error } = await sb.auth.signInWithPassword({
-      email: $("#loginEmail").value.trim(),
-      password: $("#loginPassword").value
-    });
-    if (error) throw error;
-  });
-});
+  if (error) {
+    console.error("Cloud save failed:", error);
+    toast("Saved on this device. Cloud sync needs attention.");
+  }
+}
 
-$("#forgotPassword").addEventListener("click", async () => {
-  if (!requireClient()) return;
-  const email = $("#loginEmail").value.trim();
-  if (!email) { showAuthMessage("Enter your email address first.", true); return; }
-  const { error } = await sb.auth.resetPasswordForEmail(email, {
-    redirectTo: window.location.origin + window.location.pathname
-  });
-  if (error) showAuthMessage(error.message, true);
-  else showAuthMessage("Password reset instructions have been sent to your email.");
-});
-
-$("#recoveryForm").addEventListener("submit", event => {
-  event.preventDefault();
-  withButton(event.target, "Saving...", async () => {
-    const { error } = await sb.auth.updateUser({ password: $("#newPassword").value });
-    if (error) throw error;
-    event.target.reset();
-    showAuthForm("login");
-    showAuthMessage("Password updated. You can now log in.");
-    await sb.auth.signOut();
-  });
-});
-
-$("#logoutButton").addEventListener("click", async () => {
-  if (!sb) return;
-  clearTimeout(saveTimer);
-  await cloudSave();
-  const { error } = await sb.auth.signOut();
-  if (error) toast("Could not log out.");
-});
+async function saveData() {
+  if (!data) return;
+  saveLocalData();
+  await saveCloudData();
+}
 
 async function loadStudentData(user) {
   currentUser = user;
-  let loaded = null;
 
-  const { data: row, error } = await sb.from(TABLE).select("data").eq("user_id", user.id).maybeSingle();
-  if (error) {
-    console.error(error);
-    try { loaded = JSON.parse(localStorage.getItem(`${LOCAL_KEY}-${user.id}`)); } catch { loaded = null; }
-    if (!loaded) {
-      currentUser = null;
-      showAuthMessage("Could not load your study space. Please try again.", true);
-      return;
+  let cloudData = null;
+
+  if (supabaseClient && user) {
+    const { data: row, error } = await supabaseClient
+      .from(TABLE)
+      .select("data")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Cloud data could not be loaded:", error);
+    } else if (row?.data) {
+      cloudData = row.data;
     }
-    toast("Offline copy loaded. Changes will sync when possible.");
-  } else if (row && row.data) {
-    loaded = row.data;
   }
 
-  const isNew = !loaded;
-  data = normalize(loaded);
-  if (isNew) data.profile.name = user.user_metadata?.full_name || "Student";
-  if (!error && isNew) await cloudSave();
+  data = normalize(cloudData || readLocalData());
 
-  authScreen.hidden = true;
-  appShell.hidden = false;
-  fillSettings();
-  setMode("focus");
+  if (cloudData) {
+    saveLocalData();
+  }
+
+  await saveData();
+  showApplication();
+}
+
+
+// ==========================================
+// 5. APPLICATION STARTUP
+// ==========================================
+
+function initializeSupabase() {
+  if (
+    SUPABASE_URL &&
+    SUPABASE_KEY &&
+    window.supabase?.createClient
+  ) {
+    supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+  } else {
+    console.warn("Supabase is not configured. Local demo mode is available.");
+  }
+}
+
+function showApplication() {
+  $("#authScreen").hidden = true;
+  $("#appShell").hidden = false;
+
+  applyLanguage();
   renderAll();
   showPage("dashboard");
 }
 
-function showLoggedOut() {
+function showAuth() {
+  $("#authScreen").hidden = false;
+  $("#appShell").hidden = true;
   currentUser = null;
-  data = defaults();
-  stopTimer();
-  appShell.hidden = true;
-  authScreen.hidden = false;
-  document.body.classList.remove("dark-theme");
-  showAuthForm("login");
+  data = null;
 }
 
-if (sb) {
-  sb.auth.onAuthStateChange((event, session) => {
-    // Defer: calling Supabase inside this callback can deadlock.
-    setTimeout(async () => {
-      if (event === "PASSWORD_RECOVERY") { showAuthForm("recovery"); return; }
-      if (session?.user) {
-        if (currentUser && currentUser.id === session.user.id) return; // token refresh, nothing to reload
-        await loadStudentData(session.user);
-      } else {
-        showLoggedOut();
+async function initializeApp() {
+  initializeSupabase();
+
+  const languageSelect = $("#languageSelect");
+  if (languageSelect) languageSelect.value = currentLanguage;
+
+  if (supabaseClient) {
+    const { data: result, error } = await supabaseClient.auth.getSession();
+
+    if (error) {
+      console.error("Session error:", error);
+    }
+
+    if (result?.session?.user) {
+      await loadStudentData(result.session.user);
+    } else {
+      showAuth();
+    }
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
+        showAuth();
       }
-    }, 0);
-  });
-} else {
-  showAuthForm("login");
-  showAuthMessage("Supabase is not configured yet. Add SUPABASE_URL and SUPABASE_KEY at the top of script.js.", true);
+
+      if (event === "PASSWORD_RECOVERY") {
+        showRecoveryForm();
+      }
+
+      if (event === "SIGNED_IN" && session?.user && !data) {
+        loadStudentData(session.user);
+      }
+    });
+  } else {
+    // Local demonstration mode.
+    data = readLocalData();
+    currentUser = null;
+    showApplication();
+  }
 }
+
+
+// ==========================================
+// 6. NAVIGATION
+// ==========================================
+
+function showPage(name) {
+  $$(".page").forEach(page => page.classList.remove("active"));
+
+  const target = $(`#page-${name}`);
+  if (target) target.classList.add("active");
+
+  $$(".nav-link").forEach(link => {
+    link.classList.toggle("active", link.dataset.page === name);
+  });
+
+  $("#sidebar")?.classList.remove("open");
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.addEventListener("click", (event) => {
+  const pageButton = event.target.closest("[data-page]");
+
+  if (pageButton) {
+    showPage(pageButton.dataset.page);
+  }
+
+  const closeButton = event.target.closest("[data-close]");
+
+  if (closeButton) {
+    closeModal(closeButton.dataset.close);
+  }
+});
+
+$("#menuToggle")?.addEventListener("click", () => {
+  $("#sidebar")?.classList.add("open");
+});
+
+$("#closeSidebar")?.addEventListener("click", () => {
+  $("#sidebar")?.classList.remove("open");
+});
+
+$("#editWorkspace")?.addEventListener("click", () => {
+  showPage("settings");
+  $("#workspaceInput")?.focus();
+});
+
+
+// ==========================================
+// 7. MODALS
+// ==========================================
+
+function openModal(id) {
+  const modal = $(`#${id}`);
+  if (!modal) return;
+
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
+
+  const firstInput = modal.querySelector(
+    "input:not([type=hidden]), textarea, select"
+  );
+
+  setTimeout(() => firstInput?.focus(), 100);
+}
+
+function closeModal(id) {
+  const modal = $(`#${id}`);
+  if (!modal) return;
+
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden", "true");
+}
+
+$$(".modal-overlay").forEach(modal => {
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      closeModal(modal.id);
+    }
+  });
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    $$(".modal-overlay.open").forEach(modal => closeModal(modal.id));
+    $("#sidebar")?.classList.remove("open");
+  }
+});
+
+
+// ==========================================
+// 8. LANGUAGE
+// ==========================================
+
+function applyLanguage() {
+  document.documentElement.lang = currentLanguage;
+
+  const select = $("#languageSelect");
+  if (select) select.value = currentLanguage;
+
+  const translations = {
+    en: {
+      "Home": "Home",
+      "My Tasks": "My Tasks",
+      "My Timetable": "My Timetable",
+      "Goals & Progress": "Goals & Progress",
+      "Focus Room": "Focus Room",
+      "Weekly Reflection": "Weekly Reflection",
+      "Settings": "Settings",
+      "Log out": "Log out",
+      "Your day, at a glance.": "Your day, at a glance.",
+      "Tasks that need attention": "Tasks that need attention",
+      "Today's timetable": "Today's timetable",
+      "Stay organized": "Stay organized"
+    },
+    fr: {
+      "Home": "Accueil",
+      "My Tasks": "Mes tâches",
+      "My Timetable": "Mon emploi du temps",
+      "Goals & Progress": "Objectifs et progrès",
+      "Focus Room": "Salle de concentration",
+      "Weekly Reflection": "Réflexion hebdomadaire",
+      "Settings": "Paramètres",
+      "Log out": "Déconnexion",
+      "Your day, at a glance.": "Ta journée en un coup d'œil.",
+      "Tasks that need attention": "Les tâches à traiter",
+      "Today's timetable": "Programme du jour",
+      "Stay organized": "Reste organisé"
+    }
+  };
+
+  const map = translations[currentLanguage];
+
+  // Translate navigation labels without changing their icons.
+  $$(".nav-link").forEach(button => {
+    const label = button.querySelector("span:not(.nav-icon):not(.nav-count)");
+    if (label) {
+      const original = label.dataset.original || label.textContent.trim();
+      label.dataset.original = original;
+      label.textContent = map[original] || original;
+    }
+  });
+
+  const textNodes = document.createTreeWalker(
+    document.querySelector(".content-area"),
+    NodeFilter.SHOW_TEXT
+  );
+
+  const replacements = {
+    "Your day, at a glance.": "Your day, at a glance.",
+    "Tasks that need attention": "Tasks that need attention",
+    "Today's timetable": "Today's timetable"
+  };
+
+  if (currentLanguage === "fr") {
+    Object.assign(replacements, {
+      "Your day, at a glance.": "Ta journée en un coup d'œil.",
+      "Tasks that need attention": "Les tâches à traiter",
+      "Today's timetable": "Programme du jour"
+    });
+  }
+
+  let node;
+  while ((node = textNodes.nextNode())) {
+    const value = node.nodeValue.trim();
+    if (replacements[value]) {
+      node.nodeValue = node.nodeValue.replace(value, replacements[value]);
+    }
+  }
+
+  renderAll();
+}
+
+$("#languageSelect")?.addEventListener("change", async (event) => {
+  currentLanguage = event.target.value === "fr" ? "fr" : "en";
+  localStorage.setItem("keycla-language", currentLanguage);
+  applyLanguage();
+});
+
+
+// ==========================================
+// 9. PROFILE AND APPEARANCE
+// ==========================================
+
+function renderProfile() {
+  if (!data) return;
+
+  const profile = data.profile;
+  const name = profile.name || "Student";
+  const workspace = profile.workspace || "My Workspace";
+  const avatar = initials(name);
+
+  $("#sidebarUserName").textContent = name;
+  $("#workspaceName").textContent = workspace;
+
+  $("#sidebarAvatar").textContent = avatar;
+  $("#topAvatar").textContent = avatar;
+  $("#workspaceAvatar").textContent = initials(workspace);
+
+  $("#bannerTitle").textContent = `Hello, ${name.split(" ")[0]}!`;
+
+  $("#userNameInput").value = name;
+  $("#workspaceInput").value = workspace;
+  $("#dailyGoalInput").value = profile.dailyGoal || 120;
+
+  $("#themeSelect").value = profile.theme || "light";
+
+  const banner = $("#welcomeBanner");
+  banner.className = `welcome-banner banner-${profile.banner || "plum"}`;
+
+  if (profile.bannerImage) {
+    banner.style.backgroundImage = `linear-gradient(90deg, rgba(45,25,40,.8), rgba(45,25,40,.25)), url("${profile.bannerImage}")`;
+    banner.style.backgroundSize = "cover";
+    banner.style.backgroundPosition = "center";
+  } else {
+    banner.style.backgroundImage = "";
+  }
+
+  document.documentElement.style.setProperty(
+    "--primary",
+    profile.accent || "#542D46"
+  );
+
+  document.body.classList.toggle(
+    "dark-theme",
+    profile.theme === "dark"
+  );
+
+  $("#themeToggle").textContent =
+    profile.theme === "dark" ? "☀" : "☾";
+
+  $("#bannerImageInput").value = profile.bannerImage || "";
+
+  $$(".color-swatch").forEach(swatch => {
+    swatch.classList.toggle(
+      "selected",
+      swatch.dataset.color === profile.accent
+    );
+  });
+
+  $$(".banner-swatch").forEach(swatch => {
+    swatch.classList.toggle(
+      "selected",
+      swatch.dataset.banner === profile.banner
+    );
+  });
+}
+
+$("#saveProfile")?.addEventListener("click", async () => {
+  const name = $("#userNameInput").value.trim();
+  const workspace = $("#workspaceInput").value.trim();
+  const dailyGoal = Number($("#dailyGoalInput").value);
+
+  if (!name || !workspace) {
+    toast("Please enter your name and workspace name.");
+    return;
+  }
+
+  if (!Number.isFinite(dailyGoal) || dailyGoal < 5 || dailyGoal > 720) {
+    toast("Daily goal must be between 5 and 720 minutes.");
+    return;
+  }
+
+  data.profile.name = name;
+  data.profile.workspace = workspace;
+  data.profile.dailyGoal = dailyGoal;
+
+  await saveData();
+  renderProfile();
+  toast(t("profileSaved"));
+});
+
+$$(".color-swatch").forEach(swatch => {
+  swatch.addEventListener("click", () => {
+    data.profile.accent = swatch.dataset.color;
+    renderProfile();
+    saveData();
+  });
+});
+
+$$(".banner-swatch").forEach(swatch => {
+  swatch.addEventListener("click", () => {
+    data.profile.banner = swatch.dataset.banner;
+    data.profile.bannerImage = "";
+    renderProfile();
+    saveData();
+  });
+});
+
+$("#saveAppearance")?.addEventListener("click", async () => {
+  const image = $("#bannerImageInput").value.trim();
+
+  if (image && !image.startsWith("https://")) {
+    toast("Please use a secure HTTPS image URL.");
+    return;
+  }
+
+  data.profile.bannerImage = image;
+  await saveData();
+  renderProfile();
+  toast(t("appearanceSaved"));
+});
+
+$("#savePreferences")?.addEventListener("click", async () => {
+  data.profile.theme = $("#themeSelect").value;
+  await saveData();
+  renderProfile();
+  toast(t("preferencesSaved"));
+});
+
+$("#themeToggle")?.addEventListener("click", async () => {
+  data.profile.theme =
+    data.profile.theme === "dark" ? "light" : "dark";
+
+  await saveData();
+  renderProfile();
+});
+
+
+// ==========================================
+// 10. TASKS
+// ==========================================
+
+function openTaskModal(task = null) {
+  $("#taskForm").reset();
+
+  $("#taskId").value = task?.id || "";
+  $("#taskTitle").value = task?.title || "";
+  $("#taskSubject").value = task?.subject || "";
+  $("#taskDue").value = task?.due || "";
+  $("#taskPriority").value = task?.priority || "medium";
+  $("#taskType").value = task?.type || "homework";
+  $("#taskNotes").value = task?.notes || "";
+
+  $("#taskModalTitle").textContent = task ? "Edit task" : t("newTask");
+
+  openModal("taskModal");
+}
+
+$("#addTaskButton")?.addEventListener("click", () => openTaskModal());
+$("#quickAddTask")?.addEventListener("click", () => openTaskModal());
+
+$("#taskForm")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const id = $("#taskId").value;
+
+  const task = {
+    id: id || makeId(),
+    title: $("#taskTitle").value.trim(),
+    subject: $("#taskSubject").value.trim(),
+    due: $("#taskDue").value,
+    priority: $("#taskPriority").value,
+    type: $("#taskType").value,
+    notes: $("#taskNotes").value.trim(),
+    completed: false,
+    createdAt: new Date().toISOString()
+  };
+
+  if (id) {
+    const oldTask = data.tasks.find(item => item.id === id);
+    if (oldTask) {
+      task.completed = oldTask.completed;
+      task.createdAt = oldTask.createdAt;
+      Object.assign(oldTask, task);
+    }
+  } else {
+    data.tasks.push(task);
+  }
+
+  await saveData();
+  closeModal("taskModal");
+  renderAll();
+  toast(t("taskSaved"));
+});
+
+async function deleteTask(id) {
+  if (!confirm(t("confirmDelete"))) return;
+
+  data.tasks = data.tasks.filter(task => task.id !== id);
+  await saveData();
+  renderAll();
+  toast(t("taskDeleted"));
+}
+
+async function toggleTask(id) {
+  const task = data.tasks.find(item => item.id === id);
+  if (!task) return;
+
+  task.completed = !task.completed;
+  await saveData();
+  renderAll();
+}
+
+function renderTasks() {
+  const list = $("#taskList");
+  if (!list) return;
+
+  const search = ($("#taskSearch")?.value || "").toLowerCase();
+  const filter = $("#taskFilter")?.value || "all";
+  const subject = $("#subjectFilter")?.value || "all";
+
+  const subjects = [...new Set(data.tasks.map(task => task.subject).filter(Boolean))];
+
+  const subjectSelect = $("#subjectFilter");
+  const currentSubject = subjectSelect.value;
+
+  subjectSelect.innerHTML =
+    `<option value="all">${escapeHTML(t("allTasks")) === "Toutes les tâches" ? "Toutes les matières" : "All subjects"}</option>` +
+    subjects.map(item =>
+      `<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`
+    ).join("");
+
+  subjectSelect.value = subjects.includes(currentSubject) ? currentSubject : "all";
+
+  let tasks = [...data.tasks];
+
+  if (search) {
+    tasks = tasks.filter(task =>
+      `${task.title} ${task.subject} ${task.notes}`.toLowerCase().includes(search)
+    );
+  }
+
+  if (filter === "pending") {
+    tasks = tasks.filter(task => !task.completed);
+  }
+
+  if (filter === "completed") {
+    tasks = tasks.filter(task => task.completed);
+  }
+
+  if (subjectSelect.value !== "all") {
+    tasks = tasks.filter(task => task.subject === subjectSelect.value);
+  }
+
+  tasks.sort((a, b) => {
+    if (a.completed !== b.completed) return a.completed ? 1 : -1;
+    return (a.due || "9999").localeCompare(b.due || "9999");
+  });
+
+  if (!tasks.length) {
+    list.innerHTML = `<div class="panel empty-state"><p>${escapeHTML(t("noTasks"))}</p></div>`;
+    return;
+  }
+
+  list.innerHTML = tasks.map(task => `
+    <article class="task-item ${task.completed ? "completed" : ""}">
+      <input
+        type="checkbox"
+        ${task.completed ? "checked" : ""}
+        data-task-check="${escapeHTML(task.id)}"
+        aria-label="Mark task complete"
+      >
+
+      <div class="task-info">
+        <strong>${escapeHTML(task.title)}</strong>
+        <p>
+          ${escapeHTML(task.subject)}
+          ${task.due ? ` · ${escapeHTML(formatDate(task.due))}` : ""}
+          · ${escapeHTML(task.type || "homework")}
+        </p>
+        ${task.notes ? `<p>${escapeHTML(task.notes)}</p>` : ""}
+      </div>
+
+      <span class="priority-tag priority-${escapeHTML(task.priority || "medium")}">
+        ${escapeHTML(task.priority || "medium")}
+      </span>
+
+      <button class="icon-button" data-task-edit="${escapeHTML(task.id)}" aria-label="Edit task">✎</button>
+      <button class="icon-button" data-task-delete="${escapeHTML(task.id)}" aria-label="Delete task">×</button>
+    </article>
+  `).join("");
+}
+
+$("#taskSearch")?.addEventListener("input", renderTasks);
+$("#taskFilter")?.addEventListener("change", renderTasks);
+$("#subjectFilter")?.addEventListener("change", renderTasks);
+
+$("#taskList")?.addEventListener("click", (event) => {
+  const check = event.target.closest("[data-task-check]");
+  const edit = event.target.closest("[data-task-edit]");
+  const remove = event.target.closest("[data-task-delete]");
+
+  if (check) toggleTask(check.dataset.taskCheck);
+
+  if (edit) {
+    const task = data.tasks.find(item => item.id === edit.dataset.taskEdit);
+    if (task) openTaskModal(task);
+  }
+
+  if (remove) deleteTask(remove.dataset.taskDelete);
+});
+
+
+// ==========================================
+// 11. TIMETABLE
+// ==========================================
+
+function openScheduleModal(session = null) {
+  $("#scheduleForm").reset();
+
+  $("#scheduleId").value = session?.id || "";
+  $("#scheduleSubject").value = session?.subject || "";
+  $("#scheduleDay").value = session?.day || "Monday";
+  $("#scheduleStart").value = session?.start || "17:00";
+  $("#scheduleEnd").value = session?.end || "18:00";
+  $("#scheduleColor").value = session?.color || "";
+
+  $("#scheduleModalTitle").textContent =
+    session ? "Edit session" : t("addSession");
+
+  $("#scheduleDelete").hidden = !session;
+
+  openModal("scheduleModal");
+}
+
+$("#addScheduleButton")?.addEventListener("click", () => openScheduleModal());
+$("#quickAddSession")?.addEventListener("click", () => openScheduleModal());
+
+$("#scheduleForm")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const start = $("#scheduleStart").value;
+  const end = $("#scheduleEnd").value;
+
+  if (start >= end) {
+    toast("The end time must be later than the start time.");
+    return;
+  }
+
+  const id = $("#scheduleId").value;
+
+  const session = {
+    id: id || makeId(),
+    subject: $("#scheduleSubject").value.trim(),
+    day: $("#scheduleDay").value,
+    start,
+    end,
+    color: $("#scheduleColor").value
+  };
+
+  if (id) {
+    const index = data.timetable.findIndex(item => item.id === id);
+    if (index !== -1) data.timetable[index] = session;
+  } else {
+    data.timetable.push(session);
+  }
+
+  await saveData();
+  closeModal("scheduleModal");
+  renderAll();
+  toast(t("sessionSaved"));
+});
+
+$("#scheduleDelete")?.addEventListener("click", async () => {
+  const id = $("#scheduleId").value;
+  if (!id || !confirm(t("confirmDelete"))) return;
+
+  data.timetable = data.timetable.filter(item => item.id !== id);
+
+  await saveData();
+  closeModal("scheduleModal");
+  renderAll();
+});
+
+function renderTimetable() {
+  const grid = $("#timetableGrid");
+  if (!grid) return;
+
+  grid.innerHTML = DAYS.map(day => {
+    const sessions = data.timetable
+      .filter(item => item.day === day)
+      .sort((a, b) => a.start.localeCompare(b.start));
+
+    return `
+      <div class="timetable-day">
+        <h4>${escapeHTML(day)}</h4>
+        ${sessions.map(session => `
+          <button
+            class="schedule-item"
+            data-session-edit="${escapeHTML(session.id)}"
+            style="width:100%;text-align:left"
+          >
+            <strong>${escapeHTML(session.subject)}</strong>
+            <span>${escapeHTML(session.start)} – ${escapeHTML(session.end)}</span>
+          </button>
+        `).join("")}
+      </div>
+    `;
+  }).join("");
+}
+
+$("#timetableGrid")?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-session-edit]");
+  if (!button) return;
+
+  const session = data.timetable.find(
+    item => item.id === button.dataset.sessionEdit
+  );
+
+  if (session) openScheduleModal(session);
+});
+
+
+// ==========================================
+// 12. GOALS
+// ==========================================
+
+function openGoalModal(goal = null) {
+  $("#goalForm").reset();
+
+  $("#goalId").value = goal?.id || "";
+  $("#goalTitle").value = goal?.title || "";
+  $("#goalDescription").value = goal?.description || "";
+  $("#goalTarget").value = goal?.target || 10;
+  $("#goalUnit").value = goal?.unit || "sessions";
+  $("#goalCurrent").value = goal?.current || 0;
+
+  $("#goalModalTitle").textContent = goal ? "Edit goal" : t("newGoal");
+
+  openModal("goalModal");
+}
+
+$("#addGoalButton")?.addEventListener("click", () => openGoalModal());
+$("#quickAddGoal")?.addEventListener("click", () => openGoalModal());
+
+$("#goalForm")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const id = $("#goalId").value;
+  const target = Number($("#goalTarget").value);
+  const current = Number($("#goalCurrent").value);
+
+  if (target <= 0 || current < 0) {
+    toast("Please enter valid goal numbers.");
+    return;
+  }
+
+  const goal = {
+    id: id || makeId(),
+    title: $("#goalTitle").value.trim(),
+    description: $("#goalDescription").value.trim(),
+    target,
+    unit: $("#goalUnit").value.trim(),
+    current: Math.min(current, target)
+  };
+
+  if (id) {
+    const index = data.goals.findIndex(item => item.id === id);
+    if (index !== -1) data.goals[index] = goal;
+  } else {
+    data.goals.push(goal);
+  }
+
+  await saveData();
+  closeModal("goalModal");
+  renderAll();
+  toast(t("goalSaved"));
+});
+
+function renderGoals() {
+  const list = $("#goalList");
+  if (!list) return;
+
+  const achieved = data.goals.filter(
+    goal => Number(goal.current) >= Number(goal.target)
+  ).length;
+
+  $("#achievedGoals").textContent = achieved;
+
+  if (!data.goals.length) {
+    list.innerHTML = `<div class="panel"><p>${escapeHTML(t("noGoals"))}</p></div>`;
+    return;
+  }
+
+  list.innerHTML = data.goals.map(goal => {
+    const percent = Math.min(
+      100,
+      Math.round((Number(goal.current) / Number(goal.target)) * 100)
+    );
+
+    return `
+      <article class="goal-card">
+        <h3>${escapeHTML(goal.title)}</h3>
+        <p>${escapeHTML(goal.description || "")}</p>
+
+        <div class="goal-progress-track">
+          <div class="goal-progress-fill" style="width:${percent}%"></div>
+        </div>
+
+        <div class="goal-meta">
+          <span>${escapeHTML(String(goal.current))} / ${escapeHTML(String(goal.target))} ${escapeHTML(goal.unit)}</span>
+          <strong>${percent}%</strong>
+        </div>
+
+        <div class="goal-actions" style="display:flex;gap:8px;margin-top:15px">
+          <button class="secondary-button" data-goal-edit="${escapeHTML(goal.id)}">Edit</button>
+          <button class="danger-button" data-goal-delete="${escapeHTML(goal.id)}">Delete</button>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+$("#goalList")?.addEventListener("click", async (event) => {
+  const edit = event.target.closest("[data-goal-edit]");
+  const remove = event.target.closest("[data-goal-delete]");
+
+  if (edit) {
+    const goal = data.goals.find(item => item.id === edit.dataset.goalEdit);
+    if (goal) openGoalModal(goal);
+  }
+
+  if (remove) {
+    if (!confirm(t("confirmDelete"))) return;
+
+    data.goals = data.goals.filter(
+      item => item.id !== remove.dataset.goalDelete
+    );
+
+    await saveData();
+    renderAll();
+  }
+});
+
+
+// ==========================================
+// 13. FOCUS ROOM
+// ==========================================
+
+function updateTimerDisplay() {
+  const minutes = Math.floor(timerRemaining / 60);
+  const seconds = timerRemaining % 60;
+
+  $("#timerDisplay").textContent =
+    `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+  document.title = `${$("#timerDisplay").textContent} — KEYCLA`;
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerRunning = false;
+
+  $("#timerStart").textContent = t("start");
+}
+
+function setTimerMode(mode) {
+  stopTimer();
+
+  currentMode = mode;
+  timerRemaining = MODES[mode] || MODES.focus;
+
+  $$(".mode-button").forEach(button => {
+    button.classList.toggle("active", button.dataset.mode === mode);
+  });
+
+  updateTimerDisplay();
+}
+
+$$(".mode-button").forEach(button => {
+  button.addEventListener("click", () => {
+    setTimerMode(button.dataset.mode);
+  });
+});
+
+$("#timerStart")?.addEventListener("click", () => {
+  if (timerRunning) {
+    stopTimer();
+    $("#timerStart").textContent = t("resume");
+    return;
+  }
+
+  timerRunning = true;
+  $("#timerStart").textContent = t("pause");
+
+  timerInterval = setInterval(async () => {
+    timerRemaining--;
+
+    updateTimerDisplay();
+
+    if (timerRemaining <= 0) {
+      stopTimer();
+
+      if (currentMode === "focus") {
+        data.focus.sessions++;
+        data.focus.minutes += 25;
+        await saveData();
+        renderFocusStats();
+      }
+
+      toast(t("focusComplete"));
+      setTimerMode(currentMode);
+    }
+  }, 1000);
+});
+
+$("#timerReset")?.addEventListener("click", () => {
+  stopTimer();
+  timerRemaining = MODES[currentMode];
+  updateTimerDisplay();
+});
+
+$("#saveIntention")?.addEventListener("click", async () => {
+  data.intention = $("#focusIntention").value.trim();
+  await saveData();
+  toast("Intention saved.");
+});
+
+function renderFocusStats() {
+  $("#focusIntention").value = data.intention || "";
+  $("#focusSessions").textContent = data.focus.sessions || 0;
+  $("#focusMinutes").textContent = data.focus.minutes || 0;
+}
+
+
+// ==========================================
+// 14. WEEKLY REFLECTION
+// ==========================================
+
+function renderJournal() {
+  $("#journalDate").textContent = formatDate(today());
+
+  const history = $("#journalHistory");
+  if (!history) return;
+
+  if (!data.reflections.length) {
+    history.hidden = true;
+    history.innerHTML = "";
+    return;
+  }
+
+  history.hidden = false;
+
+  history.innerHTML = `
+    <h3>Previous reflections</h3>
+    ${data.reflections
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .map(item => `
+        <article class="reflection-entry" style="padding:15px 0;border-bottom:1px solid var(--border)">
+          <strong>${escapeHTML(formatDate(item.date))}</strong>
+          <p><b>Went well:</b> ${escapeHTML(item.wins || "—")}</p>
+          <p><b>Challenges:</b> ${escapeHTML(item.challenges || "—")}</p>
+          <p><b>Next steps:</b> ${escapeHTML(item.next || "—")}</p>
+          <button class="danger-button" data-reflection-delete="${escapeHTML(item.id)}">Delete</button>
+        </article>
+      `).join("")}
+  `;
+}
+
+$("#saveJournal")?.addEventListener("click", async () => {
+  const wins = $("#journalWins").value.trim();
+  const challenges = $("#journalChallenges").value.trim();
+  const next = $("#journalNext").value.trim();
+
+  if (!wins && !challenges && !next) {
+    toast("Write something before saving your reflection.");
+    return;
+  }
+
+  const existing = data.reflections.find(item => item.date === today());
+
+  const reflection = {
+    id: existing?.id || makeId(),
+    date: today(),
+    wins,
+    challenges,
+    next
+  };
+
+  if (existing) {
+    Object.assign(existing, reflection);
+  } else {
+    data.reflections.push(reflection);
+  }
+
+  await saveData();
+
+  $("#journalMessage").textContent = t("reflectionSaved");
+  renderJournal();
+});
+
+$("#journalHistory")?.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-reflection-delete]");
+  if (!button || !confirm(t("confirmDelete"))) return;
+
+  data.reflections = data.reflections.filter(
+    item => item.id !== button.dataset.reflectionDelete
+  );
+
+  await saveData();
+  renderJournal();
+});
+
+
+// ==========================================
+// 15. HOME DASHBOARD
+// ==========================================
+
+function renderDashboard() {
+  const pending = data.tasks.filter(task => !task.completed);
+  const completed = data.tasks.filter(task => task.completed);
+
+  $("#totalTasks").textContent = data.tasks.length;
+  $("#completedTasks").textContent = completed.length;
+  $("#pendingTasks").textContent = pending.length;
+  $("#sidebarTaskCount").textContent = pending.length;
+
+  $("#dailyTargetValue").textContent = data.profile.dailyGoal || 120;
+
+  const goal = Number(data.profile.dailyGoal) || 120;
+  const minutes = Number(data.focus.minutes) || 0;
+
+  const percentage = Math.min(100, Math.round((minutes / goal) * 100));
+
+  $("#dailyProgressLabel").textContent = `${percentage}%`;
+  $("#dailyProgressBar").style.width = `${percentage}%`;
+  $("#remainingToday").textContent = Math.max(0, goal - minutes);
+
+  const upcoming = [...pending]
+    .sort((a, b) => (a.due || "9999").localeCompare(b.due || "9999"))
+    .slice(0, 5);
+
+  $("#dashboardTasks").innerHTML = upcoming.length
+    ? upcoming.map(task => `
+      <div class="task-preview-item">
+        <div class="task-info">
+          <strong>${escapeHTML(task.title)}</strong>
+          <p>${escapeHTML(task.subject)}${task.due ? ` · ${escapeHTML(formatDate(task.due))}` : ""}</p>
+        </div>
+        <span class="priority-tag priority-${escapeHTML(task.priority || "medium")}">
+          ${escapeHTML(task.priority || "medium")}
+        </span>
+      </div>
+    `).join("")
+    : `<p class="muted-text">${escapeHTML(t("noTasks"))}</p>`;
+
+  const dayName = DAYS[(new Date().getDay() + 6) % 7];
+
+  const sessions = data.timetable
+    .filter(session => session.day === dayName)
+    .sort((a, b) => a.start.localeCompare(b.start));
+
+  $("#dashboardSchedule").innerHTML = sessions.length
+    ? sessions.map(session => `
+      <div class="task-preview-item">
+        <div class="task-info">
+          <strong>${escapeHTML(session.subject)}</strong>
+          <p>${escapeHTML(session.start)} – ${escapeHTML(session.end)}</p>
+        </div>
+      </div>
+    `).join("")
+    : `<p class="muted-text">${escapeHTML(t("noSchedule"))}</p>`;
+}
+
+function renderDate() {
+  const date = new Date();
+
+  $("#todayDate").textContent = date.toLocaleDateString(
+    currentLanguage === "fr" ? "fr-FR" : "en-GB",
+    {
+      weekday: "short",
+      day: "numeric",
+      month: "long"
+    }
+  );
+}
+
+function renderAll() {
+  if (!data) return;
+
+  renderProfile();
+  renderDate();
+  renderTasks();
+  renderTimetable();
+  renderGoals();
+  renderFocusStats();
+  renderJournal();
+  renderDashboard();
+  updateTimerDisplay();
+}
+
+
+// ==========================================
+// 16. EXPORT / IMPORT / RESET
+// ==========================================
+
+$("#exportData")?.addEventListener("click", () => {
+  const file = new Blob(
+    [JSON.stringify(data, null, 2)],
+    { type: "application/json" }
+  );
+
+  const url = URL.createObjectURL(file);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "keycla-backup.json";
+  link.click();
+
+  URL.revokeObjectURL(url);
+  toast(t("dataExported"));
+});
+
+$("#importDataButton")?.addEventListener("click", () => {
+  $("#importDataInput").click();
+});
+
+$("#importDataInput")?.addEventListener("change", async (event) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  try {
+    const content = await file.text();
+    data = normalize(JSON.parse(content));
+
+    await saveData();
+    renderAll();
+
+    toast(t("dataImported"));
+  } catch (error) {
+    console.error("Import failed:", error);
+    toast("This backup file is not valid.");
+  }
+
+  event.target.value = "";
+});
+
+$("#resetData")?.addEventListener("click", async () => {
+  if (!confirm(t("confirmReset"))) return;
+
+  data = defaults();
+  await saveData();
+  renderAll();
+
+  toast(t("dataReset"));
+});
+
+
+// ==========================================
+// 17. AUTHENTICATION
+// ==========================================
+
+function switchAuthTab(tab) {
+  const login = tab === "login";
+
+  $("#loginForm").hidden = !login;
+  $("#signupForm").hidden = login;
+  $("#recoveryForm").hidden = true;
+
+  $("#loginTab").classList.toggle("active", login);
+  $("#signupTab").classList.toggle("active", !login);
+
+  setAuthMessage("");
+}
+
+$("#loginTab")?.addEventListener("click", () => switchAuthTab("login"));
+$("#signupTab")?.addEventListener("click", () => switchAuthTab("signup"));
+
+function showRecoveryForm() {
+  $("#loginForm").hidden = true;
+  $("#signupForm").hidden = true;
+  $("#recoveryForm").hidden = false;
+  $("#authTabs").hidden = true;
+  setAuthMessage("");
+}
+
+$("#forgotPassword")?.addEventListener("click", async () => {
+  if (!supabaseClient) {
+    setAuthMessage("Password recovery requires a configured account.", true);
+    return;
+  }
+
+  const email = $("#loginEmail").value.trim();
+
+  if (!email) {
+    setAuthMessage(t("emailRequired"), true);
+    return;
+  }
+
+  const redirectTo = window.location.origin + window.location.pathname;
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo
+  });
+
+  if (error) {
+    setAuthMessage(error.message, true);
+  } else {
+    setAuthMessage(t("recoverySent"));
+  }
+});
+
+$("#loginForm")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  if (!supabaseClient) {
+    setAuthMessage(
+      "Demo mode is active. Your workspace is stored on this device.",
+      false
+    );
+    data = readLocalData();
+    showApplication();
+    return;
+  }
+
+  const email = $("#loginEmail").value.trim();
+  const password = $("#loginPassword").value;
+
+  const button = $("#loginForm button[type=submit]");
+  button.disabled = true;
+  button.textContent = "Please wait...";
+
+  const { data: result, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  button.disabled = false;
+  button.textContent = t("loginSuccess") === "Bon retour!" ? "Connexion" : "Log in";
+
+  if (error) {
+    setAuthMessage(error.message || t("loginError"), true);
+    return;
+  }
+
+  if (result?.user) {
+    await loadStudentData(result.user);
+  }
+});
+
+$("#signupForm")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const name = $("#signupName").value.trim();
+  const email = $("#signupEmail").value.trim();
+  const password = $("#signupPassword").value;
+  const confirmation = $("#signupConfirmPassword").value;
+
+  if (password.length < 8) {
+    setAuthMessage(t("passwordShort"), true);
+    return;
+  }
+
+  if (password !== confirmation) {
+    setAuthMessage(t("passwordMismatch"), true);
+    return;
+  }
+
+  if (!supabaseClient) {
+    data = defaults();
+    data.profile.name = name;
+    await saveData();
+    showApplication();
+    toast("Demo workspace created on this device.");
+    return;
+  }
+
+  const button = $("#signupForm button[type=submit]");
+  button.disabled = true;
+  button.textContent = "Please wait...";
+
+  const { data: result, error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { full_name: name },
+      emailRedirectTo: window.location.origin + window.location.pathname
+    }
+  });
+
+  button.disabled = false;
+  button.textContent = "Create account";
+
+  if (error) {
+    setAuthMessage(error.message || t("signupError"), true);
+    return;
+  }
+
+  if (result?.session && result?.user) {
+    data = defaults();
+    data.profile.name = name;
+    await loadStudentData(result.user);
+  } else {
+    setAuthMessage(t("accountCreated"));
+  }
+});
+
+$("#recoveryForm")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  if (!supabaseClient) return;
+
+  const password = $("#newPassword").value;
+
+  if (password.length < 8) {
+    setAuthMessage(t("passwordShort"), true);
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.updateUser({ password });
+
+  if (error) {
+    setAuthMessage(error.message, true);
+    return;
+  }
+
+  $("#authTabs").hidden = false;
+  switchAuthTab("login");
+  setAuthMessage(t("passwordUpdated"));
+});
+
+$("#logoutButton")?.addEventListener("click", async () => {
+  stopTimer();
+
+  if (supabaseClient && currentUser) {
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+      toast(error.message);
+      return;
+    }
+  }
+
+  showAuth();
+});
+
+
+// ==========================================
+// 18. START
+// ==========================================
+
+document.addEventListener("DOMContentLoaded", initializeApp);
+
