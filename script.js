@@ -570,40 +570,54 @@ async function initializeApp() {
 
   applyLanguage();
 
-  if (supabaseClient) {
-    const { data: result, error } = await supabaseClient.auth.getSession();
-
-    if (error) {
-      console.error("Session error:", error);
-    }
-
-    if (result?.session?.user) {
-      await loadStudentData(result.session.user);
-    } else {
-      showAuth();
-    }
-
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_OUT") {
-        showAuth();
-      }
-
-      if (event === "PASSWORD_RECOVERY") {
-        showRecoveryForm();
-      }
-
-      if (event === "SIGNED_IN" && session?.user && !data) {
-        loadStudentData(session.user);
-      }
-    });
-  } else {
-    // Local demonstration mode.
+  if (!supabaseClient) {
     currentUser = null;
     data = readLocalData();
     showApplication();
+    return;
+  }
+
+  // Listen for authentication changes first.
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+
+    if (event === "SIGNED_OUT") {
+      showAuth();
+      return;
+    }
+
+    if (event === "PASSWORD_RECOVERY") {
+      showRecoveryForm();
+      return;
+    }
+
+    if (
+      (event === "SIGNED_IN" || event === "INITIAL_SESSION") &&
+      session?.user
+    ) {
+      // Run outside the authentication callback to avoid blocking Supabase.
+      setTimeout(() => {
+        if (currentUser?.id !== session.user.id) {
+          loadStudentData(session.user).catch(error => {
+            console.error("Student data loading failed:", error);
+          });
+        }
+      }, 0);
+    }
+  });
+
+  // Check whether a session already exists.
+  const { data: result, error } = await supabaseClient.auth.getSession();
+
+  if (error) {
+    console.error("Session error:", error);
+  }
+
+  if (result?.session?.user) {
+    await loadStudentData(result.session.user);
+  } else {
+    showAuth();
   }
 }
-
 
 // ==========================================
 // 6. NAVIGATION
