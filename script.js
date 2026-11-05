@@ -7,7 +7,7 @@
 // Keep your existing project URL and publishable key here.
 // Never use your service_role / secret key in frontend code.
 
-const SUPABASE_URL = "https://supabase.com/dashboard/project/wlvdoekstcisatqiqqow";
+const SUPABASE_URL = "https://wlvdoekstcisatqiqqow.supabase.co";
 const SUPABASE_KEY = "sb_publishable__9cPey1XsdLTx5gBPY0Q5w_5Dv5owQU";
 
 const TABLE = "studyspace_data";
