@@ -566,7 +566,9 @@ async function initializeApp() {
   initializeSupabase();
 
   const languageSelect = $("#languageSelect");
-  if (languageSelect) languageSelect.value = currentLanguage;
+  if (languageSelect) {
+    languageSelect.value = currentLanguage;
+  }
 
   applyLanguage();
 
@@ -579,37 +581,35 @@ async function initializeApp() {
 
   // Listen for authentication changes first.
   supabaseClient.auth.onAuthStateChange((event, session) => {
-
     if (event === "SIGNED_OUT") {
       showAuth();
       return;
     }
 
     if (event === "PASSWORD_RECOVERY") {
-      showRecoveryForm();
+      setTimeout(() => showRecoveryForm(), 0);
       return;
     }
 
-    if (
-      (event === "SIGNED_IN" || event === "INITIAL_SESSION") &&
-      session?.user
-    ) {
-      // Run outside the authentication callback to avoid blocking Supabase.
+    if (event === "SIGNED_IN" && session?.user) {
+      // Run Supabase data operations outside the auth callback.
       setTimeout(() => {
-        if (currentUser?.id !== session.user.id) {
-          loadStudentData(session.user).catch(error => {
-            console.error("Student data loading failed:", error);
-          });
+        if (!data || currentUser?.id !== session.user.id) {
+          loadStudentData(session.user);
         }
       }, 0);
     }
   });
 
-  // Check whether a session already exists.
-  const { data: result, error } = await supabaseClient.auth.getSession();
+  // Then check whether a session already exists.
+  const { data: result, error } =
+    await supabaseClient.auth.getSession();
 
   if (error) {
     console.error("Session error:", error);
+    setAuthMessage("Unable to restore your session. Please log in again.", true);
+    showAuth();
+    return;
   }
 
   if (result?.session?.user) {
