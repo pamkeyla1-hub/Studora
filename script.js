@@ -1820,3 +1820,19 @@ $("#logoutButton")?.addEventListener("click", async () => {
 // ==========================================
 
 document.addEventListener("DOMContentLoaded", initializeApp);
+const googleLoginButton = document.getElementById("googleLogin");
+
+if (googleLoginButton) {
+  googleLoginButton.addEventListener("click", async () => {
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin
+      }
+    });
+
+    if (error) {
+      alert("Google login error: " + error.message);
+    }
+  });
+}
