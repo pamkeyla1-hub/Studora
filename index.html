@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,8 +27,8 @@
     </div>
 
     <div class="auth-tabs" id="authTabs">
-      <button type="button" class="auth-tab active" id="loginTab">Log in</button>
-      <button type="button" class="auth-tab" id="signupTab">Create account</button>
+      <button type="button" class="auth-tab active" id="loginTab" data-i18n="login">Log in</button>
+      <button type="button" class="auth-tab" id="signupTab" data-i18n="createAccount">Create account</button>
     </div>
 
     <form id="loginForm">
@@ -43,7 +42,7 @@
       <input id="loginPassword" type="password" required autocomplete="current-password">
 
       <button type="button" class="auth-forgot" id="forgotPassword">Forgot password?</button>
-      <button type="submit" class="primary-button auth-submit">Log in</button>
+      <button type="submit" class="primary-button auth-submit" data-i18n="login">Log in</button>
     </form>
 
     <form id="signupForm" hidden>
@@ -62,7 +61,7 @@
       <label for="signupConfirmPassword">Confirm password</label>
       <input id="signupConfirmPassword" type="password" required minlength="8" autocomplete="new-password">
 
-      <button type="submit" class="primary-button auth-submit">Create account</button>
+      <button type="submit" class="primary-button auth-submit" data-i18n="createAccount">Create account</button>
     </form>
 
     <form id="recoveryForm" hidden>
@@ -93,7 +92,7 @@
         <div class="brand-name">KEYCLA</div>
         <div class="brand-caption">YOUR STUDY SPACE</div>
       </div>
-      <button class="icon-button sidebar-close" id="closeSidebar" aria-label="Close menu">×</button>
+      <button type="button" class="icon-button sidebar-close" id="closeSidebar" aria-label="Close menu">×</button>
     </div>
 
     <div class="workspace-switcher">
@@ -102,37 +101,37 @@
         <strong id="workspaceName">My Workspace</strong>
         <span>Personal space</span>
       </div>
-      <button class="icon-button" id="editWorkspace" title="Edit workspace" aria-label="Edit workspace">✎</button>
+      <button type="button" class="icon-button" id="editWorkspace" title="Edit workspace" aria-label="Edit workspace">✎</button>
     </div>
 
     <div class="nav-label">YOUR WORKSPACE</div>
 
     <nav class="main-nav">
-      <button class="nav-link active" data-page="dashboard">
-        <span class="nav-icon">⌂</span><span>Home</span>
+      <button type="button" class="nav-link active" data-page="dashboard">
+        <span class="nav-icon">⌂</span><span data-i18n="home">Home</span>
       </button>
-      <button class="nav-link" data-page="tasks">
-        <span class="nav-icon">☷</span><span>My Tasks</span>
+      <button type="button" class="nav-link" data-page="tasks">
+        <span class="nav-icon">☷</span><span data-i18n="tasks">My Tasks</span>
         <span class="nav-count" id="sidebarTaskCount">0</span>
       </button>
-      <button class="nav-link" data-page="timetable">
-        <span class="nav-icon">▦</span><span>My Timetable</span>
+      <button type="button" class="nav-link" data-page="timetable">
+        <span class="nav-icon">▦</span><span data-i18n="timetable">My Timetable</span>
       </button>
-      <button class="nav-link" data-page="goals">
-        <span class="nav-icon">◎</span><span>Goals &amp; Progress</span>
+      <button type="button" class="nav-link" data-page="goals">
+        <span class="nav-icon">◎</span><span data-i18n="goals">Goals &amp; Progress</span>
       </button>
-      <button class="nav-link" data-page="focus">
-        <span class="nav-icon">◷</span><span>Focus Room</span>
+      <button type="button" class="nav-link" data-page="focus">
+        <span class="nav-icon">◷</span><span data-i18n="focus">Focus Room</span>
       </button>
-      <button class="nav-link" data-page="journal">
-        <span class="nav-icon">▤</span><span>Weekly Reflection</span>
+      <button type="button" class="nav-link" data-page="journal">
+        <span class="nav-icon">▤</span><span data-i18n="journal">Weekly Reflection</span>
       </button>
     </nav>
 
     <div class="nav-label tools-label">PERSONALIZATION</div>
     <nav class="main-nav">
-      <button class="nav-link" data-page="settings">
-        <span class="nav-icon">⚙</span><span>Settings</span>
+      <button type="button" class="nav-link" data-page="settings">
+        <span class="nav-icon">⚙</span><span data-i18n="settings">Settings</span>
       </button>
     </nav>
 
@@ -149,7 +148,7 @@
           <strong id="sidebarUserName">Student</strong>
           <span>Student account</span>
         </div>
-        <button class="icon-button" data-page="settings" aria-label="Profile settings">•••</button>
+        <button type="button" class="icon-button" data-page="settings" aria-label="Profile settings">•••</button>
       </div>
     </div>
   </aside>
@@ -160,7 +159,7 @@
 
     <header class="topbar">
       <div class="topbar-left">
-        <button class="icon-button menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
+        <button type="button" class="icon-button menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
         <span class="topbar-brand">KEYCLA</span>
       </div>
 
@@ -172,9 +171,9 @@
           <option value="fr">FR</option>
         </select>
 
-        <button class="icon-button" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">☾</button>
-        <button class="secondary-button" id="logoutButton" type="button">Log out</button>
-        <button class="top-avatar" id="topAvatar" data-page="settings" aria-label="Settings">K</button>
+        <button type="button" class="icon-button" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">☾</button>
+        <button class="secondary-button" id="logoutButton" type="button" data-i18n="logout">Log out</button>
+        <button type="button" class="top-avatar" id="topAvatar" data-page="settings" aria-label="Settings">K</button>
       </div>
     </header>
 
@@ -189,8 +188,8 @@
             <div class="eyebrow">YOUR PERSONAL WORKSPACE</div>
             <h1 id="bannerTitle">Hello!</h1>
             <p>Make room for what matters today.</p>
-            <button class="banner-button" data-page="tasks">
-              <span>View my tasks</span><span>→</span>
+            <button type="button" class="banner-button" data-page="tasks">
+              <span data-i18n="viewTasks">View my tasks</span><span>→</span>
             </button>
           </div>
 
@@ -204,10 +203,10 @@
         <div class="home-intro">
           <div>
             <div class="eyebrow">A FRESH START</div>
-            <h2>Your day, at a glance.</h2>
-            <p>Focus on what needs your attention.</p>
+            <h2 data-i18n="glance">Your day, at a glance.</h2>
+            <p data-i18n="glanceSub">Focus on what needs your attention.</p>
           </div>
-          <button class="text-button" data-page="settings">Customize ↗</button>
+          <button type="button" class="text-button" data-page="settings" data-i18n="customize">Customize ↗</button>
         </div>
 
         <div class="home-grid">
@@ -216,10 +215,10 @@
             <div class="panel-heading">
               <div>
                 <span class="eyebrow">PRIORITIES</span>
-                <h3>Tasks that need attention</h3>
-                <p>Your upcoming work.</p>
+                <h3 data-i18n="priorities">Tasks that need attention</h3>
+                <p data-i18n="prioritiesSub">Your upcoming work.</p>
               </div>
-              <button class="text-button" data-page="tasks">See all →</button>
+              <button type="button" class="text-button" data-page="tasks" data-i18n="seeAllArrow">See all →</button>
             </div>
             <div id="dashboardTasks" class="task-preview-list"></div>
           </article>
@@ -228,10 +227,10 @@
             <div class="panel-heading">
               <div>
                 <span class="eyebrow">YOUR PLAN</span>
-                <h3>Today's timetable</h3>
-                <p>What your day looks like.</p>
+                <h3 data-i18n="today">Today's timetable</h3>
+                <p data-i18n="todaySub">What your day looks like.</p>
               </div>
-              <button class="text-button" data-page="timetable">Edit ↗</button>
+              <button type="button" class="text-button" data-page="timetable" data-i18n="editArrow">Edit ↗</button>
             </div>
             <div id="dashboardSchedule" class="schedule-preview"></div>
           </article>
@@ -261,9 +260,9 @@
         </div>
 
         <div class="quick-actions compatibility-section">
-          <button id="quickAddTask">Add task</button>
-          <button id="quickAddSession">Add session</button>
-          <button id="quickAddGoal">Add goal</button>
+          <button type="button" id="quickAddTask">Add task</button>
+          <button type="button" id="quickAddSession">Add session</button>
+          <button type="button" id="quickAddGoal">Add goal</button>
         </div>
 
       </section>
@@ -273,20 +272,20 @@
       <section class="page" id="page-tasks">
         <div class="page-heading">
           <div>
-            <div class="eyebrow">STAY ORGANIZED</div>
-            <h1>My Tasks</h1>
-            <p>Keep track of homework, revision and projects.</p>
+            <div class="eyebrow" data-i18n="tasksEyebrow">STAY ORGANIZED</div>
+            <h1 data-i18n="tasks">My Tasks</h1>
+            <p data-i18n="tasksSub">Keep track of homework, revision and projects.</p>
           </div>
-          <button class="primary-button" id="addTaskButton">＋ New task</button>
+          <button type="button" class="primary-button" id="addTaskButton" data-i18n="btnNewTask">＋ New task</button>
         </div>
 
         <div class="task-toolbar">
-          <input type="search" id="taskSearch" class="search-input" placeholder="Search tasks..." aria-label="Search tasks">
+          <input type="search" id="taskSearch" class="search-input" data-i18n-placeholder="search" placeholder="Search tasks..." aria-label="Search tasks">
 
           <select id="taskFilter" class="select-input" aria-label="Filter tasks">
-            <option value="all">All tasks</option>
-            <option value="pending">Pending</option>
-            <option value="completed">Completed</option>
+            <option value="all" data-i18n="allTasks">All tasks</option>
+            <option value="pending" data-i18n="pending">Pending</option>
+            <option value="completed" data-i18n="completed">Completed</option>
           </select>
 
           <select id="subjectFilter" class="select-input" aria-label="Filter by subject">
@@ -302,22 +301,22 @@
       <section class="page" id="page-timetable">
         <div class="page-heading">
           <div>
-            <div class="eyebrow">PLAN YOUR WEEK</div>
-            <h1>My Timetable</h1>
-            <p>Build a weekly routine that works for you.</p>
+            <div class="eyebrow" data-i18n="timetableEyebrow">PLAN YOUR WEEK</div>
+            <h1 data-i18n="timetable">My Timetable</h1>
+            <p data-i18n="timetableSub">Build a weekly routine that works for you.</p>
           </div>
-          <button class="primary-button" id="addScheduleButton">＋ Add session</button>
+          <button type="button" class="primary-button" id="addScheduleButton" data-i18n="btnAddSession">＋ Add session</button>
         </div>
 
         <div class="panel timetable-panel">
           <div class="timetable-header">
-            <h3>Weekly schedule</h3>
-            <span class="soft-tag">YOUR WEEK</span>
+            <h3 data-i18n="weeklySchedule">Weekly schedule</h3>
+            <span class="soft-tag" data-i18n="yourWeek">YOUR WEEK</span>
           </div>
           <div class="timetable-grid" id="timetableGrid"></div>
         </div>
 
-        <p class="helper-text">Select a session to edit or remove it.</p>
+        <p class="helper-text" data-i18n="timetableHelper">Select a session to edit or remove it.</p>
       </section>
 
 
@@ -325,16 +324,16 @@
       <section class="page" id="page-goals">
         <div class="page-heading">
           <div>
-            <div class="eyebrow">MAKE PROGRESS</div>
-            <h1>Goals &amp; Progress</h1>
-            <p>Turn your plans into achievable steps.</p>
+            <div class="eyebrow" data-i18n="goalsEyebrow">MAKE PROGRESS</div>
+            <h1 data-i18n="goals">Goals &amp; Progress</h1>
+            <p data-i18n="goalsSub">Turn your plans into achievable steps.</p>
           </div>
-          <button class="primary-button" id="addGoalButton">＋ New goal</button>
+          <button type="button" class="primary-button" id="addGoalButton" data-i18n="btnNewGoal">＋ New goal</button>
         </div>
 
         <div class="goal-summary-grid">
           <article class="stat-card">
-            <span>Achieved goals</span>
+            <span data-i18n="achievedGoals">Achieved goals</span>
             <strong class="stat-number" id="achievedGoals">0</strong>
           </article>
         </div>
@@ -347,47 +346,47 @@
       <section class="page" id="page-focus">
         <div class="page-heading">
           <div>
-            <div class="eyebrow">DEEP WORK</div>
-            <h1>Focus Room</h1>
-            <p>Give one task your full attention.</p>
+            <div class="eyebrow" data-i18n="focusEyebrow">DEEP WORK</div>
+            <h1 data-i18n="focus">Focus Room</h1>
+            <p data-i18n="focusSub">Give one task your full attention.</p>
           </div>
         </div>
 
         <div class="focus-layout">
           <article class="panel focus-panel">
-            <div class="focus-label">TIME TO FOCUS</div>
+            <div class="focus-label" data-i18n="timeToFocus">TIME TO FOCUS</div>
             <div class="timer-display" id="timerDisplay">25:00</div>
 
             <div class="timer-mode">
-              <button class="mode-button active" data-mode="focus">Focus</button>
-              <button class="mode-button" data-mode="short">Short break</button>
-              <button class="mode-button" data-mode="long">Long break</button>
+              <button type="button" class="mode-button active" data-mode="focus" data-i18n="modeFocus">Focus</button>
+              <button type="button" class="mode-button" data-mode="short" data-i18n="modeShort">Short break</button>
+              <button type="button" class="mode-button" data-mode="long" data-i18n="modeLong">Long break</button>
             </div>
 
             <div class="timer-controls">
-              <button class="primary-button timer-start" id="timerStart">Start</button>
-              <button class="secondary-button" id="timerReset">Reset</button>
+              <button type="button" class="primary-button timer-start" id="timerStart">Start</button>
+              <button type="button" class="secondary-button" id="timerReset" data-i18n="reset">Reset</button>
             </div>
 
-            <p class="timer-note">One step at a time. Stay present.</p>
+            <p class="timer-note" data-i18n="timerNote">One step at a time. Stay present.</p>
           </article>
 
           <div class="focus-side">
             <article class="panel">
-              <h3>Today's intention</h3>
-              <p class="muted-text">What would you like to accomplish?</p>
+              <h3 data-i18n="intentionTitle">Today's intention</h3>
+              <p class="muted-text" data-i18n="intentionSub">What would you like to accomplish?</p>
               <textarea id="focusIntention" rows="3" placeholder="Today, I want to..."></textarea>
-              <button class="secondary-button full-button" id="saveIntention">Save intention</button>
+              <button type="button" class="secondary-button full-button" id="saveIntention" data-i18n="saveIntention">Save intention</button>
             </article>
 
             <article class="panel">
-              <h3>Your focus today</h3>
+              <h3 data-i18n="focusToday">Your focus today</h3>
               <div class="focus-stat">
-                <span>Sessions today</span>
+                <span data-i18n="sessionsToday">Sessions today</span>
                 <strong id="focusSessions">0</strong>
               </div>
               <div class="focus-stat">
-                <span>Minutes focused</span>
+                <span data-i18n="minutesFocused">Minutes focused</span>
                 <strong id="focusMinutes">0</strong>
               </div>
             </article>
@@ -400,15 +399,15 @@
       <section class="page" id="page-journal">
         <div class="page-heading">
           <div>
-            <div class="eyebrow">PAUSE & REFLECT</div>
-            <h1>Weekly Reflection</h1>
-            <p>Notice your progress and plan your next steps.</p>
+            <div class="eyebrow" data-i18n="journalEyebrow">PAUSE &amp; REFLECT</div>
+            <h1 data-i18n="journal">Weekly Reflection</h1>
+            <p data-i18n="journalSub">Notice your progress and plan your next steps.</p>
           </div>
         </div>
 
         <article class="panel journal-panel">
           <div class="journal-date">
-            <span>TODAY</span>
+            <span data-i18n="journalTodayLabel">TODAY</span>
             <strong id="journalDate"></strong>
           </div>
 
@@ -421,7 +420,7 @@
           <label for="journalNext">What would you like to improve next week?</label>
           <textarea id="journalNext" rows="4" placeholder="Write down your next steps..."></textarea>
 
-          <button class="primary-button" id="saveJournal">Save reflection</button>
+          <button type="button" class="primary-button" id="saveJournal" data-i18n="saveReflection">Save reflection</button>
           <p class="save-message" id="journalMessage" aria-live="polite"></p>
         </article>
 
@@ -433,9 +432,9 @@
       <section class="page" id="page-settings">
         <div class="page-heading">
           <div>
-            <div class="eyebrow">MAKE IT YOURS</div>
-            <h1>Settings</h1>
-            <p>Personalize your KEYCLA workspace.</p>
+            <div class="eyebrow" data-i18n="settingsEyebrow">MAKE IT YOURS</div>
+            <h1 data-i18n="settings">Settings</h1>
+            <p data-i18n="settingsSub">Personalize your KEYCLA workspace.</p>
           </div>
         </div>
 
@@ -453,7 +452,7 @@
             <label for="dailyGoalInput">Daily study goal (minutes)</label>
             <input id="dailyGoalInput" type="number" min="5" max="720" step="5" value="120">
 
-            <button class="primary-button" id="saveProfile">Save changes</button>
+            <button type="button" class="primary-button" id="saveProfile">Save changes</button>
           </article>
 
 
@@ -462,25 +461,25 @@
 
             <label>Accent color</label>
             <div class="color-options">
-              <button class="color-swatch selected" data-color="#542D46" style="--swatch:#542D46" aria-label="Deep plum"></button>
-              <button class="color-swatch" data-color="#B68B72" style="--swatch:#B68B72" aria-label="Soft copper"></button>
-              <button class="color-swatch" data-color="#8A6A7D" style="--swatch:#8A6A7D" aria-label="Muted mauve"></button>
-              <button class="color-swatch" data-color="#6F8176" style="--swatch:#6F8176" aria-label="Sage"></button>
-              <button class="color-swatch" data-color="#9A785F" style="--swatch:#9A785F" aria-label="Warm brown"></button>
+              <button type="button" class="color-swatch selected" data-color="#542D46" style="--swatch:#542D46" aria-label="Deep plum"></button>
+              <button type="button" class="color-swatch" data-color="#B68B72" style="--swatch:#B68B72" aria-label="Soft copper"></button>
+              <button type="button" class="color-swatch" data-color="#8A6A7D" style="--swatch:#8A6A7D" aria-label="Muted mauve"></button>
+              <button type="button" class="color-swatch" data-color="#6F8176" style="--swatch:#6F8176" aria-label="Sage"></button>
+              <button type="button" class="color-swatch" data-color="#9A785F" style="--swatch:#9A785F" aria-label="Warm brown"></button>
             </div>
 
             <label>Banner style</label>
             <div class="banner-options">
-              <button class="banner-swatch banner-plum selected" data-banner="plum" aria-label="Plum banner"></button>
-              <button class="banner-swatch banner-champagne" data-banner="champagne" aria-label="Champagne banner"></button>
-              <button class="banner-swatch banner-copper" data-banner="copper" aria-label="Copper banner"></button>
-              <button class="banner-swatch banner-sage" data-banner="sage" aria-label="Sage banner"></button>
+              <button type="button" class="banner-swatch banner-plum selected" data-banner="plum" aria-label="Plum banner"></button>
+              <button type="button" class="banner-swatch banner-champagne" data-banner="champagne" aria-label="Champagne banner"></button>
+              <button type="button" class="banner-swatch banner-copper" data-banner="copper" aria-label="Copper banner"></button>
+              <button type="button" class="banner-swatch banner-sage" data-banner="sage" aria-label="Sage banner"></button>
             </div>
 
             <label for="bannerImageInput">Optional banner image URL (https)</label>
             <input id="bannerImageInput" type="url" placeholder="https://example.com/image.jpg">
 
-            <button class="secondary-button" id="saveAppearance">Save appearance</button>
+            <button type="button" class="secondary-button" id="saveAppearance">Save appearance</button>
           </article>
 
 
@@ -493,7 +492,7 @@
               <option value="dark">Dark</option>
             </select>
 
-            <button class="primary-button" id="savePreferences">Save preferences</button>
+            <button type="button" class="primary-button" id="savePreferences">Save preferences</button>
           </article>
 
 
@@ -502,10 +501,10 @@
             <p class="muted-text">Keep a backup of your workspace whenever you need one.</p>
 
             <div class="data-actions">
-              <button class="secondary-button" id="exportData">↓ Export my data</button>
-              <button class="secondary-button" id="importDataButton">↑ Import backup</button>
+              <button type="button" class="secondary-button" id="exportData">↓ Export my data</button>
+              <button type="button" class="secondary-button" id="importDataButton">↑ Import backup</button>
               <input type="file" id="importDataInput" accept=".json,application/json" hidden>
-              <button class="danger-button" id="resetData">Reset all data</button>
+              <button type="button" class="danger-button" id="resetData">Reset all data</button>
             </div>
           </article>
 
@@ -524,25 +523,25 @@
 
   <!-- MOBILE BOTTOM NAVIGATION -->
   <nav class="mobile-bottom-nav" aria-label="Main navigation">
-    <button class="nav-link active" data-page="dashboard">
+    <button type="button" class="nav-link active" data-page="dashboard">
       <span class="nav-icon">⌂</span>
-      <span>Home</span>
+      <span data-i18n="home">Home</span>
     </button>
-    <button class="nav-link" data-page="tasks">
+    <button type="button" class="nav-link" data-page="tasks">
       <span class="nav-icon">☷</span>
-      <span>Tasks</span>
+      <span data-i18n="tasksShort">Tasks</span>
     </button>
-    <button class="nav-link" data-page="timetable">
+    <button type="button" class="nav-link" data-page="timetable">
       <span class="nav-icon">▦</span>
-      <span>Plan</span>
+      <span data-i18n="planShort">Plan</span>
     </button>
-    <button class="nav-link" data-page="focus">
+    <button type="button" class="nav-link" data-page="focus">
       <span class="nav-icon">◷</span>
-      <span>Focus</span>
+      <span data-i18n="focusShort">Focus</span>
     </button>
-    <button class="nav-link" data-page="settings">
+    <button type="button" class="nav-link" data-page="settings">
       <span class="nav-icon">•••</span>
-      <span>More</span>
+      <span data-i18n="moreShort">More</span>
     </button>
   </nav>
 
@@ -601,8 +600,8 @@
       <textarea id="taskNotes" rows="3" placeholder="Add details..."></textarea>
 
       <div class="modal-actions">
-        <button type="button" class="secondary-button" data-close="taskModal">Cancel</button>
-        <button type="submit" class="primary-button">Save task</button>
+        <button type="button" class="secondary-button" data-close="taskModal" data-i18n="cancel">Cancel</button>
+        <button type="submit" class="primary-button" data-i18n="save">Save</button>
       </div>
     </form>
   </div>
@@ -628,13 +627,13 @@
 
       <label for="scheduleDay">Day</label>
       <select id="scheduleDay" class="select-input">
-        <option>Monday</option>
-        <option>Tuesday</option>
-        <option>Wednesday</option>
-        <option>Thursday</option>
-        <option>Friday</option>
-        <option>Saturday</option>
-        <option>Sunday</option>
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+        <option value="Saturday">Saturday</option>
+        <option value="Sunday">Sunday</option>
       </select>
 
       <div class="form-row">
@@ -657,9 +656,9 @@
       </select>
 
       <div class="modal-actions">
-        <button type="button" class="danger-button" id="scheduleDelete" hidden>Delete</button>
-        <button type="button" class="secondary-button" data-close="scheduleModal">Cancel</button>
-        <button type="submit" class="primary-button">Save session</button>
+        <button type="button" class="danger-button" id="scheduleDelete" hidden data-i18n="delete">Delete</button>
+        <button type="button" class="secondary-button" data-close="scheduleModal" data-i18n="cancel">Cancel</button>
+        <button type="submit" class="primary-button" data-i18n="save">Save</button>
       </div>
     </form>
   </div>
@@ -701,8 +700,8 @@
       <input id="goalCurrent" type="number" min="0" value="0" required>
 
       <div class="modal-actions">
-        <button type="button" class="secondary-button" data-close="goalModal">Cancel</button>
-        <button type="submit" class="primary-button">Save goal</button>
+        <button type="button" class="secondary-button" data-close="goalModal" data-i18n="cancel">Cancel</button>
+        <button type="submit" class="primary-button" data-i18n="save">Save</button>
       </div>
     </form>
   </div>
