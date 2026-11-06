@@ -1,10 +1,8 @@
-
 /* ==========================================
    KEYCLA — Design System
    Plum & Champagne
+   (Fonts are loaded from index.html)
    ========================================== */
-
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
   --background: #F4EDE4;
@@ -325,6 +323,54 @@ a {
 .auth-submit {
   width: 100%;
   margin-top: 7px;
+}
+
+/* Google sign-in */
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  color: var(--text-soft);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 17px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  color: var(--text);
+  background: #fff;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.google-button:hover {
+  background: var(--surface-soft);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.google-button svg {
+  flex-shrink: 0;
 }
 
 .auth-message {
@@ -859,6 +905,22 @@ a {
   font-weight: 800;
 }
 
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: var(--surface);
+}
+
+.stat-number {
+  color: var(--primary);
+  font-family: var(--heading-font);
+  font-size: 28px;
+}
+
 /* ==========================================
    TASKS
    ========================================== */
@@ -918,6 +980,11 @@ a {
 .task-preview-item p {
   margin-top: 3px;
   font-size: 11px;
+}
+
+.task-item .task-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .task-item input[type="checkbox"] {
@@ -1015,11 +1082,14 @@ a {
 
 .schedule-item,
 .schedule-session {
+  display: block;
   padding: 9px;
   margin-bottom: 8px;
+  border: 0;
   border-left: 3px solid var(--accent);
   border-radius: 7px;
   background: #EDE1E8;
+  color: var(--text);
   cursor: pointer;
 }
 
@@ -1474,6 +1544,8 @@ body.dark-theme .topbar {
 body.dark-theme input,
 body.dark-theme textarea,
 body.dark-theme select,
+body.dark-theme .select-input,
+body.dark-theme .language-select,
 body.dark-theme .auth-card input,
 body.dark-theme .settings-panel input,
 body.dark-theme .modal input,
@@ -1484,9 +1556,27 @@ body.dark-theme .journal-panel textarea {
   background: #352B36;
 }
 
+body.dark-theme .language-select {
+  color: var(--champagne);
+}
+
+body.dark-theme .secondary-button {
+  color: var(--champagne);
+}
+
+body.dark-theme .google-button {
+  color: #29232B;
+  background: #F5EDE8;
+}
+
+body.dark-theme .google-button:hover {
+  background: #E8DDD6;
+}
+
 body.dark-theme .task-item,
 body.dark-theme .task-preview-item,
-body.dark-theme .goal-card {
+body.dark-theme .goal-card,
+body.dark-theme .stat-card {
   background: var(--surface);
 }
 
@@ -1500,9 +1590,24 @@ body.dark-theme .schedule-session {
   color: white;
 }
 
+body.dark-theme .schedule-item span,
+body.dark-theme .schedule-session span {
+  color: rgba(255,255,255,.7);
+}
+
+body.dark-theme .soft-tag {
+  color: var(--champagne);
+  background: #493746;
+}
+
 body.dark-theme .welcome-banner h1,
 body.dark-theme .welcome-banner p {
   color: white;
+}
+
+body.dark-theme .home-intro h2,
+body.dark-theme .auth-card h2 {
+  color: var(--text);
 }
 
 /* ==========================================
@@ -1755,6 +1860,10 @@ body.dark-theme .welcome-banner p {
     background: var(--surface);
   }
 
+  body.dark-theme .mobile-bottom-nav .nav-link {
+    color: var(--text-soft);
+  }
+
   body.dark-theme .mobile-bottom-nav .nav-link.active {
     color: var(--champagne);
     background: #493746;
@@ -1807,31 +1916,4 @@ body.dark-theme .welcome-banner p {
   .mobile-bottom-nav {
     padding-inline: 3px;
   }
-}
-.google-login {
-  width: 100%;
-  height: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: transparent;
-  border: 1px solid #E4D7CB;
-  border-radius: 10px;
-  color: #29232B;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.google-login img {
-  width: 17px;
-  height: 17px;
-  object-fit: contain;
-}
-
-.google-login:hover {
-  background: #F4EDE4;
 }
