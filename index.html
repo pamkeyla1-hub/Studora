@@ -2,28 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#F4EDE4">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#FCFBFA">
   <meta name="description" content="KEYCLA — Your space. Your pace. Your progress.">
   <title>KEYCLA — Your Study Space</title>
+
+  <!-- Installable app (PWA) -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="KEYCLA">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
 </head>
 
 <body>
 
+<!-- LOADING -->
+<div class="boot-screen" id="bootScreen" aria-label="Loading">
+  <div class="brand-mark">K</div>
+</div>
+
+
 <!-- AUTHENTICATION -->
-<section class="auth-screen" id="authScreen">
+<section class="auth-screen" id="authScreen" hidden>
   <div class="auth-card">
     <div class="auth-brand">
       <div class="brand-mark">K</div>
       <h1>KEYCLA</h1>
-      <p>Your space. Your pace. Your progress.</p>
+      <p data-i18n="tagline">Your space. Your pace. Your progress.</p>
     </div>
 
     <div class="auth-tabs" id="authTabs">
@@ -32,16 +47,13 @@
     </div>
 
     <form id="loginForm">
-      <h2>Welcome back!</h2>
-      <p>Continue where you left off.</p>
-
-      <label for="loginEmail">Email address</label>
+      <label for="loginEmail" data-i18n="email">Email address</label>
       <input id="loginEmail" type="email" required autocomplete="email">
 
-      <label for="loginPassword">Password</label>
+      <label for="loginPassword" data-i18n="password">Password</label>
       <input id="loginPassword" type="password" required autocomplete="current-password">
 
-      <button type="button" class="auth-forgot" id="forgotPassword">Forgot password?</button>
+      <button type="button" class="auth-forgot" id="forgotPassword" data-i18n="forgotPassword">Forgot password?</button>
       <button type="submit" class="primary-button auth-submit" data-i18n="login">Log in</button>
 
       <div class="auth-divider"><span data-i18n="orDivider">or</span></div>
@@ -58,19 +70,16 @@
     </form>
 
     <form id="signupForm" hidden>
-      <h2>Create your account</h2>
-      <p>Your personal study space starts here.</p>
-
-      <label for="signupName">Full name</label>
+      <label for="signupName" data-i18n="fullName">Full name</label>
       <input id="signupName" type="text" required maxlength="60" autocomplete="name">
 
-      <label for="signupEmail">Email address</label>
+      <label for="signupEmail" data-i18n="email">Email address</label>
       <input id="signupEmail" type="email" required autocomplete="email">
 
-      <label for="signupPassword">Password</label>
+      <label for="signupPassword" data-i18n="password">Password</label>
       <input id="signupPassword" type="password" required minlength="8" autocomplete="new-password">
 
-      <label for="signupConfirmPassword">Confirm password</label>
+      <label for="signupConfirmPassword" data-i18n="confirmPassword">Confirm password</label>
       <input id="signupConfirmPassword" type="password" required minlength="8" autocomplete="new-password">
 
       <button type="submit" class="primary-button auth-submit" data-i18n="createAccount">Create account</button>
@@ -89,17 +98,15 @@
     </form>
 
     <form id="recoveryForm" hidden>
-      <h2>Choose a new password</h2>
-      <p>Enter a new password for your account.</p>
+      <h2 class="auth-title" data-i18n="chooseNewPassword">Choose a new password</h2>
 
-      <label for="newPassword">New password</label>
+      <label for="newPassword" data-i18n="newPassword">New password</label>
       <input id="newPassword" type="password" required minlength="8" autocomplete="new-password">
 
-      <button type="submit" class="primary-button auth-submit">Save password</button>
+      <button type="submit" class="primary-button auth-submit" data-i18n="savePassword">Save password</button>
     </form>
 
     <p class="auth-message" id="authMessage" role="status" aria-live="polite"></p>
-    <p class="auth-footer">Your learning journey, in one place.</p>
   </div>
 </section>
 
@@ -107,73 +114,57 @@
 <!-- APPLICATION -->
 <div class="app-shell" id="appShell" hidden>
 
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
 
     <div class="brand">
       <div class="brand-mark">K</div>
-      <div>
-        <div class="brand-name">KEYCLA</div>
-        <div class="brand-caption">YOUR STUDY SPACE</div>
-      </div>
+      <div class="brand-name">KEYCLA</div>
       <button type="button" class="icon-button sidebar-close" id="closeSidebar" aria-label="Close menu">×</button>
     </div>
-
-    <div class="workspace-switcher">
-      <div class="workspace-avatar" id="workspaceAvatar">K</div>
-      <div class="workspace-info">
-        <strong id="workspaceName">My Workspace</strong>
-        <span>Personal space</span>
-      </div>
-      <button type="button" class="icon-button" id="editWorkspace" title="Edit workspace" aria-label="Edit workspace">✎</button>
-    </div>
-
-    <div class="nav-label">YOUR WORKSPACE</div>
 
     <nav class="main-nav">
       <button type="button" class="nav-link active" data-page="dashboard">
         <span class="nav-icon">⌂</span><span data-i18n="home">Home</span>
       </button>
       <button type="button" class="nav-link" data-page="tasks">
-        <span class="nav-icon">☷</span><span data-i18n="tasks">My Tasks</span>
+        <span class="nav-icon">☑</span><span data-i18n="tasks">Tasks</span>
         <span class="nav-count" id="sidebarTaskCount">0</span>
       </button>
       <button type="button" class="nav-link" data-page="timetable">
-        <span class="nav-icon">▦</span><span data-i18n="timetable">My Timetable</span>
+        <span class="nav-icon">▦</span><span data-i18n="timetable">Timetable</span>
       </button>
-      <button type="button" class="nav-link" data-page="goals">
-        <span class="nav-icon">◎</span><span data-i18n="goals">Goals &amp; Progress</span>
+      <button type="button" class="nav-link" data-page="grades">
+        <span class="nav-icon">✎</span><span data-i18n="grades">Grades</span>
+      </button>
+      <button type="button" class="nav-link" data-page="revision">
+        <span class="nav-icon">❏</span><span data-i18n="revision">Revision</span>
       </button>
       <button type="button" class="nav-link" data-page="focus">
-        <span class="nav-icon">◷</span><span data-i18n="focus">Focus Room</span>
-      </button>
-      <button type="button" class="nav-link" data-page="journal">
-        <span class="nav-icon">▤</span><span data-i18n="journal">Weekly Reflection</span>
+        <span class="nav-icon">◷</span><span data-i18n="focus">Focus</span>
       </button>
     </nav>
 
-    <div class="nav-label tools-label">PERSONALIZATION</div>
-    <nav class="main-nav">
+    <nav class="main-nav secondary-nav">
+      <button type="button" class="nav-link" data-page="goals">
+        <span class="nav-icon">◎</span><span data-i18n="goals">Goals</span>
+      </button>
+      <button type="button" class="nav-link" data-page="journal">
+        <span class="nav-icon">▤</span><span data-i18n="journal">Reflection</span>
+      </button>
       <button type="button" class="nav-link" data-page="settings">
         <span class="nav-icon">⚙</span><span data-i18n="settings">Settings</span>
       </button>
     </nav>
 
     <div class="sidebar-bottom">
-      <div class="sidebar-quote">
-        <span class="quote-symbol">“</span>
-        <p>Small steps every day lead to meaningful progress.</p>
-        <span class="quote-author">— KEYCLA</span>
-      </div>
-
       <div class="profile-mini">
         <div class="profile-avatar" id="sidebarAvatar">K</div>
-        <div class="profile-info">
-          <strong id="sidebarUserName">Student</strong>
-          <span>Student account</span>
-        </div>
-        <button type="button" class="icon-button" data-page="settings" aria-label="Profile settings">•••</button>
+        <strong id="sidebarUserName">Student</strong>
       </div>
+      <button type="button" class="text-button" id="logoutButton" data-i18n="logout">Log out</button>
     </div>
   </aside>
 
@@ -188,15 +179,10 @@
       </div>
 
       <div class="topbar-actions">
-        <span class="today-date" id="todayDate"></span>
-
-        <select id="languageSelect" class="language-select" aria-label="Choose language">
+        <select id="languageSelect" class="language-select" aria-label="Language">
           <option value="en">EN</option>
           <option value="fr">FR</option>
         </select>
-
-        <button type="button" class="icon-button" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">☾</button>
-        <button class="secondary-button" id="logoutButton" type="button" data-i18n="logout">Log out</button>
         <button type="button" class="top-avatar" id="topAvatar" data-page="settings" aria-label="Settings">K</button>
       </div>
     </header>
@@ -207,87 +193,40 @@
       <!-- HOME -->
       <section class="page active" id="page-dashboard">
 
-        <div class="welcome-banner banner-plum" id="welcomeBanner">
-          <div class="banner-content">
-            <div class="eyebrow">YOUR PERSONAL WORKSPACE</div>
-            <h1 id="bannerTitle">Hello!</h1>
-            <p>Make room for what matters today.</p>
-            <button type="button" class="banner-button" data-page="tasks">
-              <span data-i18n="viewTasks">View my tasks</span><span>→</span>
-            </button>
-          </div>
+        <header class="hero">
+          <h1 id="greeting">Hello</h1>
+          <p id="heroSub"></p>
+        </header>
 
-          <div class="banner-decoration">
-            <div class="deco-circle circle-one"></div>
-            <div class="deco-circle circle-two"></div>
-            <div class="deco-star">✳</div>
-          </div>
-        </div>
-
-        <div class="home-intro">
-          <div>
-            <div class="eyebrow">A FRESH START</div>
-            <h2 data-i18n="glance">Your day, at a glance.</h2>
-            <p data-i18n="glanceSub">Focus on what needs your attention.</p>
-          </div>
-          <button type="button" class="text-button" data-page="settings" data-i18n="customize">Customize ↗</button>
-        </div>
+        <button type="button" class="reminder" id="reminderCard" data-page="tasks" hidden></button>
 
         <div class="home-grid">
 
-          <article class="panel home-task-panel">
+          <section class="panel">
             <div class="panel-heading">
-              <div>
-                <span class="eyebrow">PRIORITIES</span>
-                <h3 data-i18n="priorities">Tasks that need attention</h3>
-                <p data-i18n="prioritiesSub">Your upcoming work.</p>
-              </div>
-              <button type="button" class="text-button" data-page="tasks" data-i18n="seeAllArrow">See all →</button>
+              <h3 data-i18n="tasksToDo">To do</h3>
+              <button type="button" class="text-button" data-page="tasks" data-i18n="seeAll">See all</button>
             </div>
             <div id="dashboardTasks" class="task-preview-list"></div>
-          </article>
+          </section>
 
-          <article class="panel home-schedule-panel">
+          <section class="panel">
             <div class="panel-heading">
-              <div>
-                <span class="eyebrow">YOUR PLAN</span>
-                <h3 data-i18n="today">Today's timetable</h3>
-                <p data-i18n="todaySub">What your day looks like.</p>
-              </div>
-              <button type="button" class="text-button" data-page="timetable" data-i18n="editArrow">Edit ↗</button>
+              <h3 data-i18n="today">Today</h3>
+              <button type="button" class="text-button" data-page="timetable" data-i18n="edit">Edit</button>
             </div>
-            <div id="dashboardSchedule" class="schedule-preview"></div>
-          </article>
+            <div id="dashboardSchedule" class="task-preview-list"></div>
+          </section>
 
         </div>
 
-        <!-- Kept for compatibility with the existing JavaScript -->
-        <div class="stats-grid compatibility-section" aria-hidden="true">
-          <article class="stat-card">
-            <strong id="totalTasks">0</strong>
-          </article>
-          <article class="stat-card">
-            <strong id="completedTasks">0</strong>
-          </article>
-          <article class="stat-card">
-            <strong id="pendingTasks">0</strong>
-          </article>
-          <article class="stat-card">
-            <strong><span id="dailyTargetValue">120</span></strong>
-          </article>
-        </div>
-
-        <div class="compatibility-section" aria-hidden="true">
-          <span id="dailyProgressLabel">0%</span>
-          <div id="dailyProgressBar"></div>
-          <span id="remainingToday">120</span>
-        </div>
-
-        <div class="quick-actions compatibility-section">
-          <button type="button" id="quickAddTask">Add task</button>
-          <button type="button" id="quickAddSession">Add session</button>
-          <button type="button" id="quickAddGoal">Add goal</button>
-        </div>
+        <section class="goal-strip">
+          <div class="goal-strip-top">
+            <span data-i18n="dailyGoalTitle">Daily focus goal</span>
+            <span id="dailyGoalText">0 / 60 min</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="dailyProgressBar"></div></div>
+        </section>
 
       </section>
 
@@ -295,25 +234,17 @@
       <!-- TASKS -->
       <section class="page" id="page-tasks">
         <div class="page-heading">
-          <div>
-            <div class="eyebrow" data-i18n="tasksEyebrow">STAY ORGANIZED</div>
-            <h1 data-i18n="tasks">My Tasks</h1>
-            <p data-i18n="tasksSub">Keep track of homework, revision and projects.</p>
-          </div>
-          <button type="button" class="primary-button" id="addTaskButton" data-i18n="btnNewTask">＋ New task</button>
+          <h1 data-i18n="tasks">Tasks</h1>
+          <button type="button" class="primary-button" id="addTaskButton" data-i18n="newTask">New task</button>
         </div>
 
         <div class="task-toolbar">
-          <input type="search" id="taskSearch" class="search-input" data-i18n-placeholder="search" placeholder="Search tasks..." aria-label="Search tasks">
+          <input type="search" id="taskSearch" class="search-input" data-i18n-placeholder="searchTasks" placeholder="Search…" aria-label="Search">
 
-          <select id="taskFilter" class="select-input" aria-label="Filter tasks">
-            <option value="all" data-i18n="allTasks">All tasks</option>
+          <select id="taskFilter" class="select-input" aria-label="Filter">
+            <option value="all" data-i18n="filterAll">All</option>
             <option value="pending" data-i18n="pending">Pending</option>
             <option value="completed" data-i18n="completed">Completed</option>
-          </select>
-
-          <select id="subjectFilter" class="select-input" aria-label="Filter by subject">
-            <option value="all">All subjects</option>
           </select>
         </div>
 
@@ -324,23 +255,67 @@
       <!-- TIMETABLE -->
       <section class="page" id="page-timetable">
         <div class="page-heading">
-          <div>
-            <div class="eyebrow" data-i18n="timetableEyebrow">PLAN YOUR WEEK</div>
-            <h1 data-i18n="timetable">My Timetable</h1>
-            <p data-i18n="timetableSub">Build a weekly routine that works for you.</p>
-          </div>
-          <button type="button" class="primary-button" id="addScheduleButton" data-i18n="btnAddSession">＋ Add session</button>
+          <h1 data-i18n="timetable">Timetable</h1>
+          <button type="button" class="primary-button" id="addScheduleButton" data-i18n="addSession">Add session</button>
         </div>
 
-        <div class="panel timetable-panel">
-          <div class="timetable-header">
-            <h3 data-i18n="weeklySchedule">Weekly schedule</h3>
-            <span class="soft-tag" data-i18n="yourWeek">YOUR WEEK</span>
-          </div>
-          <div class="timetable-grid" id="timetableGrid"></div>
+        <div class="timetable-grid" id="timetableGrid"></div>
+      </section>
+
+
+      <!-- GRADES -->
+      <section class="page" id="page-grades">
+        <div class="page-heading">
+          <h1 data-i18n="grades">Grades</h1>
+          <button type="button" class="primary-button" id="addGradeButton" data-i18n="addGrade">Add grade</button>
         </div>
 
-        <p class="helper-text" data-i18n="timetableHelper">Select a session to edit or remove it.</p>
+        <div id="gradesSummary"></div>
+        <div id="gradesList"></div>
+      </section>
+
+
+      <!-- REVISION -->
+      <section class="page" id="page-revision">
+        <div class="page-heading">
+          <h1 data-i18n="revision">Revision</h1>
+          <button type="button" class="primary-button" id="addDeckButton" data-i18n="newDeck">New deck</button>
+        </div>
+
+        <div id="revisionView"></div>
+      </section>
+
+
+      <!-- FOCUS -->
+      <section class="page" id="page-focus">
+        <div class="page-heading">
+          <h1 data-i18n="focus">Focus</h1>
+        </div>
+
+        <div class="focus-wrap">
+          <article class="panel focus-panel">
+            <div class="timer-mode">
+              <button type="button" class="mode-button active" data-mode="focus" data-i18n="modeFocus">Focus</button>
+              <button type="button" class="mode-button" data-mode="short" data-i18n="modeShort">Short break</button>
+              <button type="button" class="mode-button" data-mode="long" data-i18n="modeLong">Long break</button>
+            </div>
+
+            <div class="timer-display" id="timerDisplay">25:00</div>
+
+            <div class="timer-controls">
+              <button type="button" class="primary-button timer-start" id="timerStart">Start</button>
+              <button type="button" class="secondary-button" id="timerReset" data-i18n="reset">Reset</button>
+            </div>
+
+            <p class="timer-note" id="focusStatsLine"></p>
+          </article>
+
+          <article class="panel">
+            <label for="focusIntention" data-i18n="intentionTitle">Today's intention</label>
+            <textarea id="focusIntention" rows="2" data-i18n-placeholder="intentionPlaceholder" placeholder="Today, I want to…"></textarea>
+            <button type="button" class="secondary-button" id="saveIntention" data-i18n="save">Save</button>
+          </article>
+        </div>
       </section>
 
 
@@ -348,103 +323,36 @@
       <section class="page" id="page-goals">
         <div class="page-heading">
           <div>
-            <div class="eyebrow" data-i18n="goalsEyebrow">MAKE PROGRESS</div>
-            <h1 data-i18n="goals">Goals &amp; Progress</h1>
-            <p data-i18n="goalsSub">Turn your plans into achievable steps.</p>
+            <h1 data-i18n="goals">Goals</h1>
+            <p id="goalsSummary"></p>
           </div>
-          <button type="button" class="primary-button" id="addGoalButton" data-i18n="btnNewGoal">＋ New goal</button>
-        </div>
-
-        <div class="goal-summary-grid">
-          <article class="stat-card">
-            <span data-i18n="achievedGoals">Achieved goals</span>
-            <strong class="stat-number" id="achievedGoals">0</strong>
-          </article>
+          <button type="button" class="primary-button" id="addGoalButton" data-i18n="newGoal">New goal</button>
         </div>
 
         <div class="goal-list" id="goalList"></div>
       </section>
 
 
-      <!-- FOCUS ROOM -->
-      <section class="page" id="page-focus">
-        <div class="page-heading">
-          <div>
-            <div class="eyebrow" data-i18n="focusEyebrow">DEEP WORK</div>
-            <h1 data-i18n="focus">Focus Room</h1>
-            <p data-i18n="focusSub">Give one task your full attention.</p>
-          </div>
-        </div>
-
-        <div class="focus-layout">
-          <article class="panel focus-panel">
-            <div class="focus-label" data-i18n="timeToFocus">TIME TO FOCUS</div>
-            <div class="timer-display" id="timerDisplay">25:00</div>
-
-            <div class="timer-mode">
-              <button type="button" class="mode-button active" data-mode="focus" data-i18n="modeFocus">Focus</button>
-              <button type="button" class="mode-button" data-mode="short" data-i18n="modeShort">Short break</button>
-              <button type="button" class="mode-button" data-mode="long" data-i18n="modeLong">Long break</button>
-            </div>
-
-            <div class="timer-controls">
-              <button type="button" class="primary-button timer-start" id="timerStart">Start</button>
-              <button type="button" class="secondary-button" id="timerReset" data-i18n="reset">Reset</button>
-            </div>
-
-            <p class="timer-note" data-i18n="timerNote">One step at a time. Stay present.</p>
-          </article>
-
-          <div class="focus-side">
-            <article class="panel">
-              <h3 data-i18n="intentionTitle">Today's intention</h3>
-              <p class="muted-text" data-i18n="intentionSub">What would you like to accomplish?</p>
-              <textarea id="focusIntention" rows="3" placeholder="Today, I want to..."></textarea>
-              <button type="button" class="secondary-button full-button" id="saveIntention" data-i18n="saveIntention">Save intention</button>
-            </article>
-
-            <article class="panel">
-              <h3 data-i18n="focusToday">Your focus today</h3>
-              <div class="focus-stat">
-                <span data-i18n="sessionsToday">Sessions today</span>
-                <strong id="focusSessions">0</strong>
-              </div>
-              <div class="focus-stat">
-                <span data-i18n="minutesFocused">Minutes focused</span>
-                <strong id="focusMinutes">0</strong>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-
-      <!-- WEEKLY REFLECTION -->
+      <!-- REFLECTION -->
       <section class="page" id="page-journal">
         <div class="page-heading">
           <div>
-            <div class="eyebrow" data-i18n="journalEyebrow">PAUSE &amp; REFLECT</div>
-            <h1 data-i18n="journal">Weekly Reflection</h1>
-            <p data-i18n="journalSub">Notice your progress and plan your next steps.</p>
+            <h1 data-i18n="journal">Reflection</h1>
+            <p id="journalDate"></p>
           </div>
         </div>
 
         <article class="panel journal-panel">
-          <div class="journal-date">
-            <span data-i18n="journalTodayLabel">TODAY</span>
-            <strong id="journalDate"></strong>
-          </div>
+          <label for="journalWins" data-i18n="journalWins">What went well this week?</label>
+          <textarea id="journalWins" rows="3"></textarea>
 
-          <label for="journalWins">What went well this week?</label>
-          <textarea id="journalWins" rows="4" placeholder="Write about your achievements..."></textarea>
+          <label for="journalChallenges" data-i18n="journalChallenges">What was difficult?</label>
+          <textarea id="journalChallenges" rows="3"></textarea>
 
-          <label for="journalChallenges">What challenged you?</label>
-          <textarea id="journalChallenges" rows="4" placeholder="What was difficult, and what did you learn?"></textarea>
+          <label for="journalNext" data-i18n="journalNext">What will you improve next week?</label>
+          <textarea id="journalNext" rows="3"></textarea>
 
-          <label for="journalNext">What would you like to improve next week?</label>
-          <textarea id="journalNext" rows="4" placeholder="Write down your next steps..."></textarea>
-
-          <button type="button" class="primary-button" id="saveJournal" data-i18n="saveReflection">Save reflection</button>
+          <button type="button" class="primary-button" id="saveJournal" data-i18n="save">Save</button>
           <p class="save-message" id="journalMessage" aria-live="polite"></p>
         </article>
 
@@ -455,91 +363,112 @@
       <!-- SETTINGS -->
       <section class="page" id="page-settings">
         <div class="page-heading">
-          <div>
-            <div class="eyebrow" data-i18n="settingsEyebrow">MAKE IT YOURS</div>
-            <h1 data-i18n="settings">Settings</h1>
-            <p data-i18n="settingsSub">Personalize your KEYCLA workspace.</p>
-          </div>
+          <h1 data-i18n="settings">Settings</h1>
         </div>
 
-        <div class="settings-layout">
+        <div class="settings-stack">
 
           <article class="panel settings-panel">
-            <h3>Profile &amp; workspace</h3>
+            <h3 data-i18n="appearance">Appearance</h3>
 
-            <label for="userNameInput">Your display name</label>
-            <input id="userNameInput" type="text" maxlength="35" placeholder="Your name">
-
-            <label for="workspaceInput">Workspace name</label>
-            <input id="workspaceInput" type="text" maxlength="35" placeholder="My Workspace">
-
-            <label for="dailyGoalInput">Daily study goal (minutes)</label>
-            <input id="dailyGoalInput" type="number" min="5" max="720" step="5" value="120">
-
-            <button type="button" class="primary-button" id="saveProfile">Save changes</button>
-          </article>
-
-
-          <article class="panel settings-panel">
-            <h3>Appearance</h3>
-
-            <label>Accent color</label>
-            <div class="color-options">
-              <button type="button" class="color-swatch selected" data-color="#542D46" style="--swatch:#542D46" aria-label="Deep plum"></button>
-              <button type="button" class="color-swatch" data-color="#B68B72" style="--swatch:#B68B72" aria-label="Soft copper"></button>
-              <button type="button" class="color-swatch" data-color="#8A6A7D" style="--swatch:#8A6A7D" aria-label="Muted mauve"></button>
-              <button type="button" class="color-swatch" data-color="#6F8176" style="--swatch:#6F8176" aria-label="Sage"></button>
-              <button type="button" class="color-swatch" data-color="#9A785F" style="--swatch:#9A785F" aria-label="Warm brown"></button>
+            <label data-i18n="accentColor">Your colour</label>
+            <div class="color-options" id="colorOptions">
+              <button type="button" class="color-swatch" data-color="#7A4E6B" style="--swatch:#7A4E6B" aria-label="Plum"></button>
+              <button type="button" class="color-swatch" data-color="#D9718A" style="--swatch:#D9718A" aria-label="Rose"></button>
+              <button type="button" class="color-swatch" data-color="#E08A5F" style="--swatch:#E08A5F" aria-label="Coral"></button>
+              <button type="button" class="color-swatch" data-color="#D9A441" style="--swatch:#D9A441" aria-label="Amber"></button>
+              <button type="button" class="color-swatch" data-color="#6F9A7B" style="--swatch:#6F9A7B" aria-label="Green"></button>
+              <button type="button" class="color-swatch" data-color="#4F9A94" style="--swatch:#4F9A94" aria-label="Teal"></button>
+              <button type="button" class="color-swatch" data-color="#5B7FBF" style="--swatch:#5B7FBF" aria-label="Blue"></button>
+              <button type="button" class="color-swatch" data-color="#8B6FC4" style="--swatch:#8B6FC4" aria-label="Violet"></button>
+              <label class="color-custom" for="customColor" title="Custom colour">
+                <input id="customColor" type="color" value="#7A4E6B">
+                <span data-i18n="customColor">Custom</span>
+              </label>
             </div>
 
-            <label>Banner style</label>
-            <div class="banner-options">
-              <button type="button" class="banner-swatch banner-plum selected" data-banner="plum" aria-label="Plum banner"></button>
-              <button type="button" class="banner-swatch banner-champagne" data-banner="champagne" aria-label="Champagne banner"></button>
-              <button type="button" class="banner-swatch banner-copper" data-banner="copper" aria-label="Copper banner"></button>
-              <button type="button" class="banner-swatch banner-sage" data-banner="sage" aria-label="Sage banner"></button>
+            <label data-i18n="theme">Theme</label>
+            <div class="segmented" id="themeChoices">
+              <button type="button" data-theme-choice="light" data-i18n="themeLight">Light</button>
+              <button type="button" data-theme-choice="dark" data-i18n="themeDark">Dark</button>
+              <button type="button" data-theme-choice="auto" data-i18n="themeAuto">Auto</button>
+            </div>
+          </article>
+
+
+          <article class="panel settings-panel">
+            <h3 data-i18n="preferences">Preferences</h3>
+
+            <label for="userNameInput" data-i18n="displayName">Your name</label>
+            <input id="userNameInput" type="text" maxlength="35">
+
+            <label for="dailyGoalInput" data-i18n="dailyGoalLabel">Daily focus goal (minutes)</label>
+            <input id="dailyGoalInput" type="number" min="5" max="720" step="5">
+
+            <div class="form-row">
+              <div>
+                <label for="focusLengthInput" data-i18n="lblFocusLength">Focus (min)</label>
+                <input id="focusLengthInput" type="number" min="1" max="180" step="1">
+              </div>
+              <div>
+                <label for="shortLengthInput" data-i18n="lblShortLength">Short break (min)</label>
+                <input id="shortLengthInput" type="number" min="1" max="180" step="1">
+              </div>
             </div>
 
-            <label for="bannerImageInput">Optional banner image URL (https)</label>
-            <input id="bannerImageInput" type="url" placeholder="https://example.com/image.jpg">
+            <div class="form-row">
+              <div>
+                <label for="longLengthInput" data-i18n="lblLongLength">Long break (min)</label>
+                <input id="longLengthInput" type="number" min="1" max="180" step="1">
+              </div>
+              <div>
+                <label for="gradeMaxInput" data-i18n="gradeScale">Grades out of</label>
+                <input id="gradeMaxInput" type="number" min="1" max="1000" step="1">
+              </div>
+            </div>
 
-            <button type="button" class="secondary-button" id="saveAppearance">Save appearance</button>
+            <div class="form-row">
+              <div>
+                <label for="reminderSelect" data-i18n="reminders">Deadline reminders</label>
+                <select id="reminderSelect" class="select-input">
+                  <option value="off" data-i18n="remindOff">Off</option>
+                  <option value="0" data-i18n="remindSame">Same day</option>
+                  <option value="1" data-i18n="remindOneDay">1 day before</option>
+                  <option value="2" data-i18n="remindTwoDays">2 days before</option>
+                  <option value="3" data-i18n="remindThreeDays">3 days before</option>
+                </select>
+              </div>
+              <div>
+                <label for="soundSelect" data-i18n="lblSound">Sound after a session</label>
+                <select id="soundSelect" class="select-input">
+                  <option value="on" data-i18n="soundOn">On</option>
+                  <option value="off" data-i18n="soundOff">Off</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="button" class="primary-button" id="saveProfile" data-i18n="save">Save</button>
           </article>
 
 
           <article class="panel settings-panel">
-            <h3>Preferences</h3>
+            <h3 data-i18n="yourData">Your data</h3>
 
-            <label for="themeSelect">Theme</label>
-            <select id="themeSelect" class="select-input">
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-            </select>
-
-            <button type="button" class="primary-button" id="savePreferences">Save preferences</button>
-          </article>
-
-
-          <article class="panel settings-panel">
-            <h3>Your data</h3>
-            <p class="muted-text">Keep a backup of your workspace whenever you need one.</p>
+            <div id="installRow" hidden>
+              <button type="button" class="primary-button" id="installButton" data-i18n="installApp">Install the app</button>
+              <p class="muted-text" id="installHint" hidden data-i18n="installHint">On iPhone: tap Share, then “Add to Home Screen”.</p>
+            </div>
 
             <div class="data-actions">
-              <button type="button" class="secondary-button" id="exportData">↓ Export my data</button>
-              <button type="button" class="secondary-button" id="importDataButton">↑ Import backup</button>
+              <button type="button" class="secondary-button" id="exportData" data-i18n="exportData">Export</button>
+              <button type="button" class="secondary-button" id="importDataButton" data-i18n="importData">Import</button>
               <input type="file" id="importDataInput" accept=".json,application/json" hidden>
-              <button type="button" class="danger-button" id="resetData">Reset all data</button>
+              <button type="button" class="danger-button" id="resetData" data-i18n="resetData">Reset</button>
             </div>
           </article>
 
         </div>
       </section>
-
-
-      <footer class="app-footer">
-        <span>KEYCLA © 2026</span>
-        <span>Your space. Your pace. Your progress.</span>
-      </footer>
 
     </div>
   </main>
@@ -552,20 +481,20 @@
       <span data-i18n="home">Home</span>
     </button>
     <button type="button" class="nav-link" data-page="tasks">
-      <span class="nav-icon">☷</span>
-      <span data-i18n="tasksShort">Tasks</span>
+      <span class="nav-icon">☑</span>
+      <span data-i18n="tasks">Tasks</span>
     </button>
-    <button type="button" class="nav-link" data-page="timetable">
-      <span class="nav-icon">▦</span>
-      <span data-i18n="planShort">Plan</span>
+    <button type="button" class="nav-link" data-page="revision">
+      <span class="nav-icon">❏</span>
+      <span data-i18n="revision">Revision</span>
     </button>
     <button type="button" class="nav-link" data-page="focus">
       <span class="nav-icon">◷</span>
-      <span data-i18n="focusShort">Focus</span>
+      <span data-i18n="focus">Focus</span>
     </button>
-    <button type="button" class="nav-link" data-page="settings">
-      <span class="nav-icon">•••</span>
-      <span data-i18n="moreShort">More</span>
+    <button type="button" class="nav-link" data-open-menu>
+      <span class="nav-icon">☰</span>
+      <span data-i18n="more">More</span>
     </button>
   </nav>
 
@@ -576,52 +505,49 @@
 <div class="modal-overlay" id="taskModal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="taskModalTitle">
     <div class="modal-heading">
-      <div>
-        <div class="eyebrow">TASK DETAILS</div>
-        <h2 id="taskModalTitle">New task</h2>
-      </div>
-      <button type="button" class="icon-button modal-close" data-close="taskModal" aria-label="Close">×</button>
+      <h2 id="taskModalTitle">New task</h2>
+      <button type="button" class="icon-button" data-close="taskModal" aria-label="Close">×</button>
     </div>
 
     <form id="taskForm">
       <input type="hidden" id="taskId">
 
-      <label for="taskTitle">Task name</label>
-      <input id="taskTitle" type="text" required maxlength="100" placeholder="e.g. Chemistry assignment">
+      <label for="taskTitle" data-i18n="taskName">Task</label>
+      <input id="taskTitle" type="text" required maxlength="100">
 
       <div class="form-row">
         <div>
-          <label for="taskSubject">Subject</label>
-          <input id="taskSubject" type="text" required maxlength="40" placeholder="e.g. Physics">
+          <label for="taskSubject" data-i18n="subject">Subject</label>
+          <input id="taskSubject" type="text" maxlength="40" list="subjectList">
         </div>
         <div>
-          <label for="taskDue">Due date</label>
+          <label for="taskDue" data-i18n="dueDate">Due date</label>
           <input id="taskDue" type="date">
         </div>
       </div>
 
       <div class="form-row">
         <div>
-          <label for="taskPriority">Priority</label>
+          <label for="taskPriority" data-i18n="priority">Priority</label>
           <select id="taskPriority" class="select-input">
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-            <option value="low">Low</option>
+            <option value="medium" data-i18n="priority_medium">Medium</option>
+            <option value="high" data-i18n="priority_high">High</option>
+            <option value="low" data-i18n="priority_low">Low</option>
           </select>
         </div>
         <div>
-          <label for="taskType">Task type</label>
+          <label for="taskType" data-i18n="taskType">Type</label>
           <select id="taskType" class="select-input">
-            <option value="homework">Homework</option>
-            <option value="revision">Revision</option>
-            <option value="project">Project</option>
-            <option value="other">Other</option>
+            <option value="homework" data-i18n="type_homework">Homework</option>
+            <option value="revision" data-i18n="type_revision">Revision</option>
+            <option value="project" data-i18n="type_project">Project</option>
+            <option value="other" data-i18n="type_other">Other</option>
           </select>
         </div>
       </div>
 
-      <label for="taskNotes">Notes (optional)</label>
-      <textarea id="taskNotes" rows="3" placeholder="Add details..."></textarea>
+      <label for="taskNotes" data-i18n="notes">Notes</label>
+      <textarea id="taskNotes" rows="2"></textarea>
 
       <div class="modal-actions">
         <button type="button" class="secondary-button" data-close="taskModal" data-i18n="cancel">Cancel</button>
@@ -631,25 +557,24 @@
   </div>
 </div>
 
+<datalist id="subjectList"></datalist>
+
 
 <!-- TIMETABLE MODAL -->
 <div class="modal-overlay" id="scheduleModal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="scheduleModalTitle">
     <div class="modal-heading">
-      <div>
-        <div class="eyebrow">SESSION DETAILS</div>
-        <h2 id="scheduleModalTitle">Add a session</h2>
-      </div>
-      <button type="button" class="icon-button modal-close" data-close="scheduleModal" aria-label="Close">×</button>
+      <h2 id="scheduleModalTitle">Add session</h2>
+      <button type="button" class="icon-button" data-close="scheduleModal" aria-label="Close">×</button>
     </div>
 
     <form id="scheduleForm">
       <input type="hidden" id="scheduleId">
 
-      <label for="scheduleSubject">Session name</label>
-      <input id="scheduleSubject" type="text" required maxlength="50" placeholder="e.g. Mathematics">
+      <label for="scheduleSubject" data-i18n="sessionName">Session</label>
+      <input id="scheduleSubject" type="text" required maxlength="50">
 
-      <label for="scheduleDay">Day</label>
+      <label for="scheduleDay" data-i18n="day">Day</label>
       <select id="scheduleDay" class="select-input">
         <option value="Monday">Monday</option>
         <option value="Tuesday">Tuesday</option>
@@ -662,21 +587,21 @@
 
       <div class="form-row">
         <div>
-          <label for="scheduleStart">Start time</label>
+          <label for="scheduleStart" data-i18n="startTime">Start</label>
           <input id="scheduleStart" type="time" required value="17:00">
         </div>
         <div>
-          <label for="scheduleEnd">End time</label>
+          <label for="scheduleEnd" data-i18n="endTime">End</label>
           <input id="scheduleEnd" type="time" required value="18:00">
         </div>
       </div>
 
-      <label for="scheduleColor">Session color</label>
+      <label for="scheduleColor" data-i18n="colour">Colour</label>
       <select id="scheduleColor" class="select-input">
-        <option value="">Plum</option>
-        <option value="blue">Blue</option>
-        <option value="green">Sage</option>
-        <option value="orange">Copper</option>
+        <option value="" data-i18n="colorDefault">Default</option>
+        <option value="blue" data-i18n="colorBlue">Blue</option>
+        <option value="green" data-i18n="colorGreen">Green</option>
+        <option value="orange" data-i18n="colorOrange">Orange</option>
       </select>
 
       <div class="modal-actions">
@@ -689,38 +614,135 @@
 </div>
 
 
+<!-- GRADE MODAL -->
+<div class="modal-overlay" id="gradeModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="gradeModalTitle">
+    <div class="modal-heading">
+      <h2 id="gradeModalTitle">Add grade</h2>
+      <button type="button" class="icon-button" data-close="gradeModal" aria-label="Close">×</button>
+    </div>
+
+    <form id="gradeForm">
+      <input type="hidden" id="gradeId">
+
+      <label for="gradeSubject" data-i18n="subject">Subject</label>
+      <input id="gradeSubject" type="text" required maxlength="40" list="subjectList">
+
+      <label for="gradeName" data-i18n="gradeName">Name (optional)</label>
+      <input id="gradeName" type="text" maxlength="60">
+
+      <div class="form-row">
+        <div>
+          <label for="gradeValue" data-i18n="gradeValue">Grade</label>
+          <input id="gradeValue" type="number" required min="0" step="any" inputmode="decimal">
+        </div>
+        <div>
+          <label for="gradeOutOf" data-i18n="gradeOutOf">Out of</label>
+          <input id="gradeOutOf" type="number" required min="0.1" step="any" inputmode="decimal">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="gradeWeight" data-i18n="gradeWeight">Weight</label>
+          <input id="gradeWeight" type="number" required min="0.1" step="any" inputmode="decimal" value="1">
+        </div>
+        <div>
+          <label for="gradeDate" data-i18n="gradeDate">Date</label>
+          <input id="gradeDate" type="date">
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="danger-button" id="gradeDelete" hidden data-i18n="delete">Delete</button>
+        <button type="button" class="secondary-button" data-close="gradeModal" data-i18n="cancel">Cancel</button>
+        <button type="submit" class="primary-button" data-i18n="save">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- DECK MODAL -->
+<div class="modal-overlay" id="deckModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="deckModalTitle">
+    <div class="modal-heading">
+      <h2 id="deckModalTitle">New deck</h2>
+      <button type="button" class="icon-button" data-close="deckModal" aria-label="Close">×</button>
+    </div>
+
+    <form id="deckForm">
+      <input type="hidden" id="deckId">
+
+      <label for="deckName" data-i18n="deckName">Deck name</label>
+      <input id="deckName" type="text" required maxlength="60">
+
+      <div class="modal-actions">
+        <button type="button" class="danger-button" id="deckDelete" hidden data-i18n="delete">Delete</button>
+        <button type="button" class="secondary-button" data-close="deckModal" data-i18n="cancel">Cancel</button>
+        <button type="submit" class="primary-button" data-i18n="save">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- CARD MODAL -->
+<div class="modal-overlay" id="cardModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cardModalTitle">
+    <div class="modal-heading">
+      <h2 id="cardModalTitle">Add card</h2>
+      <button type="button" class="icon-button" data-close="cardModal" aria-label="Close">×</button>
+    </div>
+
+    <form id="cardForm">
+      <input type="hidden" id="cardId">
+
+      <label for="cardFront" data-i18n="cardFront">Question</label>
+      <textarea id="cardFront" rows="3" required maxlength="500"></textarea>
+
+      <label for="cardBack" data-i18n="cardBack">Answer</label>
+      <textarea id="cardBack" rows="3" required maxlength="500"></textarea>
+
+      <div class="modal-actions">
+        <button type="button" class="danger-button" id="cardDelete" hidden data-i18n="delete">Delete</button>
+        <button type="button" class="secondary-button" data-close="cardModal" data-i18n="cancel">Cancel</button>
+        <button type="submit" class="primary-button" data-i18n="save">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 <!-- GOAL MODAL -->
 <div class="modal-overlay" id="goalModal" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="goalModalTitle">
     <div class="modal-heading">
-      <div>
-        <div class="eyebrow">GOAL DETAILS</div>
-        <h2 id="goalModalTitle">Create a goal</h2>
-      </div>
-      <button type="button" class="icon-button modal-close" data-close="goalModal" aria-label="Close">×</button>
+      <h2 id="goalModalTitle">New goal</h2>
+      <button type="button" class="icon-button" data-close="goalModal" aria-label="Close">×</button>
     </div>
 
     <form id="goalForm">
       <input type="hidden" id="goalId">
 
-      <label for="goalTitle">Goal name</label>
-      <input id="goalTitle" type="text" required maxlength="100" placeholder="e.g. Improve my Physics grade">
+      <label for="goalTitle" data-i18n="goalName">Goal</label>
+      <input id="goalTitle" type="text" required maxlength="100">
 
-      <label for="goalDescription">Description</label>
-      <textarea id="goalDescription" rows="3" placeholder="How will you work towards this goal?"></textarea>
+      <label for="goalDescription" data-i18n="description">Description</label>
+      <textarea id="goalDescription" rows="2"></textarea>
 
       <div class="form-row">
         <div>
-          <label for="goalTarget">Target</label>
+          <label for="goalTarget" data-i18n="target">Target</label>
           <input id="goalTarget" type="number" min="1" value="10" required>
         </div>
         <div>
-          <label for="goalUnit">Unit</label>
+          <label for="goalUnit" data-i18n="unit">Unit</label>
           <input id="goalUnit" type="text" maxlength="20" value="sessions" required>
         </div>
       </div>
 
-      <label for="goalCurrent">Current progress</label>
+      <label for="goalCurrent" data-i18n="current">Progress so far</label>
       <input id="goalCurrent" type="number" min="0" value="0" required>
 
       <div class="modal-actions">
