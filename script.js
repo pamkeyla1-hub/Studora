@@ -7,8 +7,8 @@
 // Keep your existing project URL and publishable key here.
 // Never use your service_role / secret key in frontend code.
 
-const SUPABASE_URL = "https://wlvdoekstcisatqiqqow.supabase.co";
-const SUPABASE_KEY = "sb_publishable__9cPey1XsdLTx5gBPY0Q5w_5Dv5owQU";
+const SUPABASE_URL = "";
+const SUPABASE_KEY = "";
 
 const TABLE = "studyspace_data";
 
@@ -143,6 +143,10 @@ const LANGUAGES = {
     login: "Log in",
     createAccount: "Create account",
     wait: "Please wait...",
+    continueGoogle: "Continue with Google",
+    orDivider: "or",
+    googleError: "Unable to sign in with Google.",
+    googleNeedsSetup: "Google sign-in requires a configured account.",
     language: "Language"
   },
 
@@ -250,6 +254,10 @@ const LANGUAGES = {
     login: "Connexion",
     createAccount: "Créer un compte",
     wait: "Un instant...",
+    continueGoogle: "Continuer avec Google",
+    orDivider: "ou",
+    googleError: "Connexion avec Google impossible.",
+    googleNeedsSetup: "La connexion Google nécessite un compte configuré.",
     language: "Langue"
   }
 };
@@ -511,8 +519,14 @@ async function loadStudentData(user, initialName = "") {
 
     data = normalize(cloudData || readLocalData());
 
-    if (!cloudData && initialName && data.profile.name === "Student") {
-      data.profile.name = initialName;
+    const providerName =
+      initialName ||
+      user?.user_metadata?.full_name ||
+      user?.user_metadata?.name ||
+      "";
+
+    if (!cloudData && providerName && data.profile.name === "Student") {
+      data.profile.name = providerName;
     }
 
     await saveData();
@@ -566,58 +580,44 @@ async function initializeApp() {
   initializeSupabase();
 
   const languageSelect = $("#languageSelect");
-  if (languageSelect) {
-    languageSelect.value = currentLanguage;
-  }
+  if (languageSelect) languageSelect.value = currentLanguage;
 
   applyLanguage();
 
-  if (!supabaseClient) {
+  if (supabaseClient) {
+    const { data: result, error } = await supabaseClient.auth.getSession();
+
+    if (error) {
+      console.error("Session error:", error);
+    }
+
+    if (result?.session?.user) {
+      await loadStudentData(result.session.user);
+    } else {
+      showAuth();
+    }
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
+        showAuth();
+      }
+
+      if (event === "PASSWORD_RECOVERY") {
+        showRecoveryForm();
+      }
+
+      if (event === "SIGNED_IN" && session?.user && !data) {
+        loadStudentData(session.user);
+      }
+    });
+  } else {
+    // Local demonstration mode.
     currentUser = null;
     data = readLocalData();
     showApplication();
-    return;
-  }
-
-  // Listen for authentication changes first.
-  supabaseClient.auth.onAuthStateChange((event, session) => {
-    if (event === "SIGNED_OUT") {
-      showAuth();
-      return;
-    }
-
-    if (event === "PASSWORD_RECOVERY") {
-      setTimeout(() => showRecoveryForm(), 0);
-      return;
-    }
-
-    if (event === "SIGNED_IN" && session?.user) {
-      // Run Supabase data operations outside the auth callback.
-      setTimeout(() => {
-        if (!data || currentUser?.id !== session.user.id) {
-          loadStudentData(session.user);
-        }
-      }, 0);
-    }
-  });
-
-  // Then check whether a session already exists.
-  const { data: result, error } =
-    await supabaseClient.auth.getSession();
-
-  if (error) {
-    console.error("Session error:", error);
-    setAuthMessage("Unable to restore your session. Please log in again.", true);
-    showAuth();
-    return;
-  }
-
-  if (result?.session?.user) {
-    await loadStudentData(result.session.user);
-  } else {
-    showAuth();
   }
 }
+
 
 // ==========================================
 // 6. NAVIGATION
@@ -1694,6 +1694,30 @@ $("#forgotPassword")?.addEventListener("click", async () => {
   }
 });
 
+async function signInWithGoogle() {
+  if (!supabaseClient) {
+    setAuthMessage(t("googleNeedsSetup"), true);
+    return;
+  }
+
+  // The browser leaves for Google, then comes back to this page.
+  // initializeApp() picks the session up from the URL automatically.
+  const { error } = await supabaseClient.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: window.location.origin + window.location.pathname
+    }
+  });
+
+  if (error) {
+    setAuthMessage(error.message || t("googleError"), true);
+  }
+}
+
+$$("[data-google-login]").forEach((button) => {
+  button.addEventListener("click", signInWithGoogle);
+});
+
 $("#loginForm")?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -1834,32 +1858,3 @@ $("#logoutButton")?.addEventListener("click", async () => {
 // ==========================================
 
 document.addEventListener("DOMContentLoaded", initializeApp);
-const googleLoginButton = document.getElementById("googleLogin");
-
-if (googleLoginButton) {
-  googleLoginButton.addEventListener("click", async () => {
-    if (!supabaseClient) {
-      alert("Supabase is not configured. Please check your settings.");
-      return;
-    }
-
-    googleLoginButton.disabled = true;
-
-    try {
-      const { error } = await supabaseClient.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: window.location.origin
-        }
-      });
-
-      if (error) {
-        alert("Google login error: " + error.message);
-        googleLoginButton.disabled = false;
-      }
-    } catch (error) {
-      alert("Error: " + error.message);
-      googleLoginButton.disabled = false;
-    }
-  });
-}
