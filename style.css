@@ -1,113 +1,465 @@
 /* ==========================================
-   KEYCLA — Design System
-   Calm, light and personal.
-   One accent colour (chosen by the user in Settings) drives everything:
-   --primary, --on-primary and --accent-text are set by script.js.
+   KEYC
+/* ==========================================
+   KEYCLA : accueil léger + examens + projets
+   À coller tout en bas de style.css
+   Utilise tes variables (--primary, --tint, --border…) :
+   la couleur choisie dans Réglages s'applique partout,
+   en clair comme en sombre.
    ========================================== */
 
-:root {
-  --primary: #7A4E6B;
-  --on-primary: #FFFFFF;
-  --accent-text: #7A4E6B;
+/* ---------- ACCUEIL ---------- */
 
-  --bg: color-mix(in srgb, var(--primary) 4%, #FCFBFA);
-  --surface: #FFFFFF;
-  --soft: color-mix(in srgb, var(--primary) 6%, #FFFFFF);
-  --tint: color-mix(in srgb, var(--primary) 11%, #FFFFFF);
-  --tint-strong: color-mix(in srgb, var(--primary) 20%, #FFFFFF);
-  --border: color-mix(in srgb, var(--primary) 9%, #E8E4E2);
-
-  --text: #26222A;
-  --text-soft: #6F6972;
-
-  --red: #B8575C;
-  --red-soft: #FBECED;
-  --orange: #A8703F;
-  --orange-soft: #FCF1E4;
-  --green: #4F7F61;
-  --green-soft: #E9F3EC;
-  --blue: #4A6FA5;
-  --blue-soft: #E8EFF8;
-
-  --radius: 16px;
-  --radius-small: 10px;
-  --shadow: 0 1px 2px rgba(30, 20, 30, .04);
-  --font: "DM Sans", system-ui, sans-serif;
-  --heading-font: "Manrope", "DM Sans", system-ui, sans-serif;
-  --sidebar-width: 232px;
+.kx-home {
+  margin-bottom: 22px;
 }
 
-body.dark-theme {
-  --bg: color-mix(in srgb, var(--primary) 7%, #151216);
-  --surface: #1E1A1F;
-  --soft: color-mix(in srgb, var(--primary) 9%, #1E1A1F);
-  --tint: color-mix(in srgb, var(--primary) 20%, #1E1A1F);
-  --tint-strong: color-mix(in srgb, var(--primary) 32%, #1E1A1F);
-  --border: color-mix(in srgb, var(--primary) 14%, #2C262D);
-
-  --text: #F3EEF1;
-  --text-soft: #A99FA7;
-
-  --red-soft: #3D2527;
-  --orange-soft: #3B2D20;
-  --green-soft: #22342A;
-  --blue-soft: #232F40;
-  --shadow: none;
+.kx-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+.kx-greet {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--accent-text);
 }
 
-[hidden] {
-  display: none !important;
+.kx-top h1 {
+  margin-top: 2px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(30px, 8vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -.5px;
+  text-transform: capitalize;
 }
 
-html {
-  scroll-behavior: smooth;
+/* Série : petite pastille avec flamme */
+.kx-pill {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: var(--tint);
+  color: var(--accent-text);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-body {
-  min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
+.kx-pill b {
+  font-family: var(--heading-font);
   font-size: 15px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
 }
 
-button,
-input,
-textarea,
-select {
-  font: inherit;
-  color: inherit;
+.kx-flame {
+  width: 15px;
+  height: auto;
 }
 
-button {
+.kx-flame.is-off {
+  filter: grayscale(1);
+  opacity: .35;
+}
+
+.kx-quote {
+  margin: 8px 0 18px;
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Le seul bloc : le défi du jour */
+.kx-featured {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 20px;
+  border-radius: var(--radius);
+  background: var(--tint);
+}
+
+.kx-featured strong {
+  font-family: var(--heading-font);
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.kx-featured .progress-track {
+  width: 100%;
+  background: var(--surface);
+}
+
+.kx-featured small {
+  color: var(--text-soft);
+  font-size: 12px;
+}
+
+.kx-featured.is-done strong {
+  color: var(--green);
+}
+
+.kx-cta {
+  margin-top: 6px;
+}
+
+/* Trois infos sans cadres */
+.kx-mini {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 20px;
+}
+
+.kx-mini-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 4px 14px 4px 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  text-align: left;
+}
+
+.kx-mini-item + .kx-mini-item {
+  padding-left: 14px;
+  border-left: 1px solid var(--border);
+}
+
+button.kx-mini-item {
   cursor: pointer;
 }
 
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--primary) 35%, transparent);
-  outline-offset: 2px;
+.kx-mini-item strong {
+  color: var(--accent-text);
+  font-family: var(--heading-font);
+  font-size: 18px;
+  line-height: 1.2;
 }
 
-h1, h2, h3, h4 {
-  font-family: var(--heading-font);
-  line-height: 1.25;
+.kx-mini-item small {
+  color: var(--text-soft);
+  font-size: 12px;
+}
+
+.kx-mini-item .progress-track {
+  width: 100%;
+  height: 4px;
+}
+
+.kx-eyebrow {
+  color: var(--text-soft);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+/* Semaine */
+.kx-week-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.kx-week {
+  display: flex;
+  gap: 10px;
+}
+
+.kx-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-soft);
+  font-size: 11px;
+  opacity: .55;
+}
+
+.kx-day i {
+  height: 16px;
+  font-size: 13px;
+  font-style: normal;
+  line-height: 16px;
+}
+
+.kx-day.is-lit,
+.kx-day.is-today {
+  opacity: 1;
+}
+
+.kx-day.is-today {
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.kx-week-block small {
+  color: var(--text-soft);
+  font-size: 12px;
+}
+
+/* Disposition horizontale */
+.kx-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.kx-mini {
+  margin-top: 0;
+  align-items: center;
+}
+
+@media (min-width: 760px) {
+  .kx-row {
+    grid-template-columns: 1fr 1.3fr;
+    gap: 28px;
+  }
+
+  .kx-featured {
+    height: 100%;
+    justify-content: center;
+  }
+
+  .kx-mini {
+    padding-left: 4px;
+  }
+}
+
+/* Petits écrans : les 3 infos restent côte à côte, en plus compact */
+@media (max-width: 520px) {
+  .kx-mini-item {
+    padding-right: 8px;
+  }
+
+  .kx-mini-item + .kx-mini-item {
+    padding-left: 10px;
+  }
+
+  .kx-mini-item strong {
+    font-size: 15px;
+  }
+
+  .kx-eyebrow {
+    font-size: 9px;
+    letter-spacing: .8px;
+  }
+
+  .kx-mini-item small {
+    font-size: 11px;
+  }
+}
+
+/* ---------- EXAMENS ---------- */
+
+#kxExamList {
+  display: grid;
+  gap: 10px;
+}
+
+.kx-exam {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  text-align: left;
   color: var(--text);
 }
 
-p {
-  color: var(--text-soft);
+.kx-exam:hover {
+  border-color: var(--primary);
 }
+
+.kx-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70px;
+}
+
+.kx-count strong {
+  color: var(--accent-text);
+  font-family: var(--heading-font);
+  font-size: 32px;
+  line-height: 1;
+}
+
+.kx-count.is-word strong {
+  font-size: 18px;
+}
+
+.kx-count span {
+  color: var(--text-soft);
+  font-size: 12px;
+}
+
+.kx-exam-info h3 {
+  font-size: 16px;
+}
+
+.kx-exam-info p {
+  font-size: 13px;
+}
+
+.kx-exam.is-soon .kx-count strong {
+  color: var(--orange);
+}
+
+.kx-exam.is-past {
+  opacity: .55;
+}
+
+.kx-section-title {
+  margin: 18px 0 2px;
+  color: var(--text-soft);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ---------- PROJETS ---------- */
+
+#kxProjectList {
+  display: grid;
+  gap: 14px;
+}
+
+.kx-project-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.kx-project-title h3 {
+  margin: 6px 0 2px;
+  font-size: 18px;
+}
+
+.kx-project-title p {
+  font-size: 13px;
+}
+
+.kx-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--tint);
+  color: var(--accent-text);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.kx-progress-label {
+  margin: 8px 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.kx-project.is-complete {
+  border-color: var(--green);
+}
+
+.kx-steps {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 12px;
+  list-style: none;
+}
+
+.kx-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.kx-step:last-child {
+  border-bottom: 0;
+}
+
+.kx-step label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.kx-step input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  flex-shrink: 0;
+  accent-color: var(--primary);
+}
+
+.kx-step.is-done span {
+  color: var(--text-soft);
+  text-decoration: line-through;
+}
+
+.kx-step-del {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-soft);
+  font-size: 18px;
+  opacity: .5;
+}
+
+.kx-step-del:hover {
+  opacity: 1;
+  background: var(--tint);
+}
+
+.kx-step-add {
+  display: flex;
+  gap: 8px;
+}
+
+.kx-step-add input {
+  flex: 1;
+}
+
+.kx-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 0;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.kx-check input {
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  accent-color: var(--primary);
+}
+LA — D
 
 /* ==========================================
    BUTTONS
