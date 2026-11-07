@@ -236,7 +236,7 @@
 
   const KINDS = ["ee", "ia", "cas", "tok", "other"];
 
-  // One short line per day under the welcome.
+  // One short line per day under the date.
   const QUOTES = {
     en: [
       "Small steps, every single day.",
@@ -385,7 +385,7 @@
   // ------------------------------------------
 
   function injectStructure() {
-    // Elegant serif used for the welcome (falls back to Georgia offline).
+    // Elegant serif used for the date (falls back to Georgia offline).
     if (!document.getElementById("kxFonts")) {
       const fonts = document.createElement("link");
       fonts.id = "kxFonts";
@@ -524,7 +524,7 @@
       });
     }
 
-    // Home cards (placed before the To do / Today panels)
+    // Home block (placed before the To do / Today panels)
     if (!$("#kxHome")) {
       const grid = $("#page-dashboard .home-grid");
       const host = document.createElement("section");
@@ -537,7 +537,7 @@
   }
 
   // ------------------------------------------
-  // 5. HOME CARDS
+  // 5. HOME
   // ------------------------------------------
 
   function countParts(days) {
@@ -545,7 +545,7 @@
     return { num: String(days), unit: days === 1 ? t("kxDay") : t("kxDays"), word: false };
   }
 
-  // Streak flame, in the style of the TikTok / Snapchat streak.
+  // Small streak flame.
   function flameSVG(on) {
     return `
       <svg class="kx-flame${on ? "" : " is-off"}" viewBox="0 0 64 80" aria-hidden="true">
@@ -566,14 +566,12 @@
     `;
   }
 
+  // Light header: greeting, big date, quote, streak and a vine.
   function heroHTML(streak) {
     const first = (data.profile?.name || "").trim().split(/\s+/)[0] || "Student";
-
-    const dateText = new Date().toLocaleDateString(locale(), {
-      weekday: "long",
-      day: "numeric",
-      month: "long"
-    });
+    const now = new Date();
+    const weekday = now.toLocaleDateString(locale(), { weekday: "long" });
+    const rest = now.toLocaleDateString(locale(), { day: "numeric", month: "long" });
 
     const quotes = QUOTES[currentLanguage] || QUOTES.en;
     const quote = quotes[dayNumber() % quotes.length];
@@ -588,11 +586,7 @@
       const label = new Date(`${key}T00:00:00`)
         .toLocaleDateString(locale(), { weekday: "narrow" });
 
-      return `
-        <span class="kx-day${focused ? " is-lit" : ""}${offset === 0 ? " is-today" : ""}">
-          <i>${focused ? "🔥" : ""}</i>${escapeHTML(label)}
-        </span>
-      `;
+      return `<span class="kx-day${focused ? " is-lit" : ""}${offset === 0 ? " is-today" : ""}"><i>${focused ? "🔥" : ""}</i>${escapeHTML(label)}</span>`;
     }).join("");
 
     const note = focusedToday
@@ -602,10 +596,10 @@
     return `
       <section class="kx-hero">
         <div class="kx-hero-main">
-          <span class="kx-eyebrow">${escapeHTML(dateText)}</span>
-          <h1>${escapeHTML(t("kxWelcomePre"))}<br><em>${escapeHTML(first)}</em></h1>
+          <span class="kx-greet">${escapeHTML(t("kxWelcomePre"))} <em>${escapeHTML(first)}</em></span>
+          <h1>${escapeHTML(weekday)}<br>${escapeHTML(rest)}</h1>
           <p class="kx-quote">“${escapeHTML(quote)}”</p>
-          <button type="button" class="primary-button kx-hero-cta" data-page="focus">${escapeHTML(t("kxStartFocus"))}</button>
+          <button type="button" class="kx-link" data-page="focus">${escapeHTML(t("kxStartFocus"))} →</button>
         </div>
 
         <div class="kx-streak-box">
@@ -620,6 +614,14 @@
           <small class="kx-streak-note">${escapeHTML(note)}</small>
         </div>
       </section>
+
+      <svg class="kx-vine" viewBox="0 0 600 24" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 12 C 30 0, 60 24, 90 12 S 150 0, 180 12 S 240 24, 270 12 S 330 0, 360 12 S 420 24, 450 12 S 510 0, 540 12 S 580 20, 600 12"
+              fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="90" cy="12" r="3.5" fill="#572b48"/>
+        <circle cx="270" cy="12" r="3.5" fill="#572b48"/>
+        <circle cx="450" cy="12" r="3.5" fill="#572b48"/>
+      </svg>
     `;
   }
 
