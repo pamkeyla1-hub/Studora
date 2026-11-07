@@ -1,0 +1,416 @@
+/* ==========================================
+   KEYCLA — Features
+   Exams, projects, level / XP / daily challenge.
+   Uses the colour variables of style.css, so the accent colour
+   and the dark theme apply automatically.
+   ========================================== */
+
+/* ---------- Home cards ---------- */
+
+.kx-home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+  margin: 0 0 20px;
+}
+
+.kx-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  text-align: left;
+  font: inherit;
+}
+
+button.kx-card {
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+button.kx-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.kx-card .progress-track {
+  width: 100%;
+  margin: 6px 0 2px;
+}
+
+.kx-card strong {
+  color: var(--text);
+  font-family: var(--heading-font);
+  font-size: 16px;
+}
+
+.kx-card small {
+  color: var(--text-soft);
+  font-size: 11px;
+}
+
+.kx-eyebrow {
+  color: var(--accent-text, var(--primary));
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+/* Level */
+
+.kx-level {
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+}
+
+.kx-badge {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  color: var(--on-primary, #fff);
+  background: var(--primary);
+  font-family: var(--heading-font);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.kx-level-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.kx-level-body strong {
+  font-size: 20px;
+}
+
+.kx-streak {
+  margin-top: 4px;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Next exam */
+
+.kx-bignum {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--accent-text, var(--primary));
+}
+
+.kx-bignum strong {
+  color: inherit;
+  font-size: 44px;
+  line-height: 1.05;
+  letter-spacing: -1px;
+}
+
+.kx-bignum span {
+  color: var(--text-soft);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.kx-bignum.is-word strong {
+  font-size: 28px;
+}
+
+.kx-exam-name {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.kx-empty {
+  justify-content: center;
+  border-style: dashed;
+}
+
+.kx-empty .kx-exam-name {
+  color: var(--accent-text, var(--primary));
+}
+
+/* Daily challenge */
+
+.kx-challenge.is-done {
+  border-color: var(--green);
+}
+
+.kx-challenge.is-done .progress-fill {
+  background: var(--green);
+}
+
+.kx-challenge.is-done small {
+  color: var(--green);
+  font-weight: 700;
+}
+
+/* ---------- Exams page ---------- */
+
+.kx-exam {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  margin-bottom: 11px;
+  color: var(--text);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.kx-exam:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.kx-exam.is-soon {
+  border-color: var(--accent);
+}
+
+.kx-exam.is-past {
+  opacity: 0.6;
+}
+
+.kx-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 82px;
+  color: var(--accent-text, var(--primary));
+}
+
+.kx-count strong {
+  color: inherit;
+  font-family: var(--heading-font);
+  font-size: 36px;
+  line-height: 1.1;
+}
+
+.kx-count.is-word strong {
+  font-size: 20px;
+}
+
+.kx-count span {
+  color: var(--text-soft);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.kx-exam-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.kx-exam-info h3 {
+  font-size: 16px;
+}
+
+.kx-exam-info p {
+  margin-top: 3px;
+  font-size: 12px;
+}
+
+.kx-section-title {
+  margin: 26px 0 12px;
+  color: var(--text-soft);
+  font-size: 12px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+/* ---------- Projects page ---------- */
+
+#kxProjectList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  align-items: start;
+}
+
+#kxProjectList > .empty-text {
+  grid-column: 1 / -1;
+}
+
+.kx-project-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.kx-project-title h3 {
+  margin: 8px 0 2px;
+  font-size: 17px;
+}
+
+.kx-project-title p {
+  font-size: 12px;
+}
+
+.kx-tag {
+  display: inline-block;
+  padding: 4px 9px;
+  border-radius: 20px;
+  color: var(--accent-text, var(--primary));
+  background: var(--surface-soft);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.kx-progress-label {
+  margin-bottom: 8px;
+  font-size: 11px;
+}
+
+.kx-project.is-complete {
+  border-color: var(--green);
+}
+
+.kx-project.is-complete .progress-fill {
+  background: var(--green);
+}
+
+.kx-steps {
+  display: grid;
+  gap: 2px;
+  margin: 8px 0 4px;
+  list-style: none;
+}
+
+.kx-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+}
+
+.kx-step label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  padding: 8px 4px;
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.kx-step input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--primary);
+}
+
+.kx-step.is-done span {
+  color: var(--text-soft);
+  text-decoration: line-through;
+}
+
+.kx-step-del {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 8px;
+  color: var(--text-soft);
+  background: transparent;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.kx-step-del:hover {
+  color: var(--red);
+  background: var(--red-soft);
+}
+
+.kx-step-add {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.kx-step-add input {
+  flex: 1;
+  min-width: 0;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  background: #fffdfa;
+  outline: none;
+}
+
+.kx-step-add input:focus {
+  border-color: var(--accent);
+}
+
+body.dark-theme .kx-step-add input {
+  background: #352B36;
+}
+
+/* Checkbox row inside the project modal */
+
+.modal label.kx-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modal label.kx-check input {
+  width: 18px;
+  min-height: 0;
+  height: 18px;
+  padding: 0;
+  accent-color: var(--primary);
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 1100px) {
+  .kx-home-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #kxProjectList {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .kx-exam {
+    gap: 12px;
+  }
+
+  .kx-count {
+    min-width: 66px;
+  }
+
+  .kx-count strong {
+    font-size: 30px;
+  }
+}
