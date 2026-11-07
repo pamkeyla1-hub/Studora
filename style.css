@@ -1675,3 +1675,478 @@ body.dark-theme .priority-low { color: #A6D1B3; }
     font-size: 12px;
   }
 }
+
+/* ==========================================
+   KEYCLA : accueil léger + examens + projets
+   À coller tout en bas de style.css
+   Utilise tes variables (--primary, --tint, --border…) :
+   la couleur choisie dans Réglages s'applique partout,
+   en clair comme en sombre.
+   ========================================== */
+
+/* ---------- ACCUEIL ---------- */
+
+.kx-home {
+  margin-bottom: 18px;
+}
+
+.kx-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-top: 14px;
+}
+
+.kx-greet {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-size: 19px;
+  color: var(--accent-text);
+}
+
+.kx-hero h1 {
+  margin: 2px 0 10px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(36px, 9vw, 56px);
+  line-height: 1.02;
+  letter-spacing: -.5px;
+  text-transform: capitalize;
+  color: var(--text);
+}
+
+.kx-quote {
+  max-width: 30ch;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.kx-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.kx-link:hover {
+  text-decoration: underline;
+}
+
+/* Série : petite flamme, aucune boîte */
+.kx-streak-box {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.kx-flame-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.kx-flame {
+  width: 20px;
+  height: auto;
+}
+
+.kx-flame.is-off {
+  filter: grayscale(1);
+  opacity: .3;
+}
+
+.kx-streak-text {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  color: var(--text-soft);
+  font-size: 12px;
+}
+
+.kx-streak-num {
+  color: var(--accent-text);
+  font-family: var(--heading-font);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.kx-week {
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.kx-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-soft);
+  font-size: 10px;
+  opacity: .6;
+}
+
+.kx-day i {
+  height: 14px;
+  font-size: 11px;
+  font-style: normal;
+  line-height: 14px;
+}
+
+.kx-day.is-lit,
+.kx-day.is-today {
+  opacity: 1;
+}
+
+.kx-day.is-today {
+  font-weight: 700;
+  color: var(--accent-text);
+}
+
+.kx-streak-note {
+  display: none;
+}
+
+/* Guirlande */
+.kx-vine {
+  display: block;
+  width: 100%;
+  height: 20px;
+  margin: 16px 0 6px;
+  color: var(--tint-strong);
+}
+
+.kx-vine circle {
+  fill: var(--primary);
+}
+
+/* Stats : une simple ligne, sans cadres */
+.kx-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+}
+
+.kx-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 8px 16px 8px 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--text);
+  text-align: left;
+}
+
+.kx-card + .kx-card {
+  padding-left: 16px;
+  border-left: 1px solid var(--border);
+}
+
+.kx-card strong {
+  font-family: var(--heading-font);
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.kx-card small {
+  color: var(--text-soft);
+  font-size: 12px;
+}
+
+.kx-card .progress-track {
+  width: 100%;
+  height: 4px;
+}
+
+.kx-exam-card {
+  cursor: pointer;
+}
+
+.kx-badge {
+  display: none;
+}
+
+.kx-level-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  width: 100%;
+}
+
+.kx-eyebrow {
+  color: var(--text-soft);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.kx-bignum {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.kx-bignum strong {
+  color: var(--accent-text);
+  font-size: 30px;
+  line-height: 1;
+}
+
+.kx-bignum.is-word strong {
+  font-size: 20px;
+}
+
+.kx-bignum span {
+  color: var(--text-soft);
+  font-size: 13px;
+}
+
+.kx-exam-name {
+  color: var(--text-soft);
+  font-size: 13px;
+}
+
+.kx-empty .kx-exam-name {
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.kx-challenge.is-done strong {
+  color: var(--green);
+}
+
+@media (max-width: 640px) {
+  .kx-hero {
+    flex-direction: column;
+  }
+
+  .kx-streak-box,
+  .kx-flame-row,
+  .kx-week {
+    text-align: left;
+    justify-content: flex-start;
+  }
+
+  .kx-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .kx-card,
+  .kx-card + .kx-card {
+    padding: 12px 0;
+    border-left: 0;
+  }
+
+  .kx-card + .kx-card {
+    border-top: 1px solid var(--border);
+  }
+}
+
+/* ---------- EXAMENS ---------- */
+
+#kxExamList {
+  display: grid;
+  gap: 10px;
+}
+
+.kx-exam {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  text-align: left;
+  color: var(--text);
+}
+
+.kx-exam:hover {
+  border-color: var(--primary);
+}
+
+.kx-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 70px;
+}
+
+.kx-count strong {
+  color: var(--accent-text);
+  font-family: var(--heading-font);
+  font-size: 32px;
+  line-height: 1;
+}
+
+.kx-count.is-word strong {
+  font-size: 18px;
+}
+
+.kx-count span {
+  color: var(--text-soft);
+  font-size: 12px;
+}
+
+.kx-exam-info h3 {
+  font-size: 16px;
+}
+
+.kx-exam-info p {
+  font-size: 13px;
+}
+
+.kx-exam.is-soon .kx-count strong {
+  color: var(--orange);
+}
+
+.kx-exam.is-past {
+  opacity: .55;
+}
+
+.kx-section-title {
+  margin: 18px 0 2px;
+  color: var(--text-soft);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ---------- PROJETS ---------- */
+
+#kxProjectList {
+  display: grid;
+  gap: 14px;
+}
+
+.kx-project-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.kx-project-title h3 {
+  margin: 6px 0 2px;
+  font-size: 18px;
+}
+
+.kx-project-title p {
+  font-size: 13px;
+}
+
+.kx-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--tint);
+  color: var(--accent-text);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.kx-progress-label {
+  margin: 8px 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.kx-project.is-complete {
+  border-color: var(--green);
+}
+
+.kx-steps {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 12px;
+  list-style: none;
+}
+
+.kx-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.kx-step:last-child {
+  border-bottom: 0;
+}
+
+.kx-step label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.kx-step input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  flex-shrink: 0;
+  accent-color: var(--primary);
+}
+
+.kx-step.is-done span {
+  color: var(--text-soft);
+  text-decoration: line-through;
+}
+
+.kx-step-del {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-soft);
+  font-size: 18px;
+  opacity: .5;
+}
+
+.kx-step-del:hover {
+  opacity: 1;
+  background: var(--tint);
+}
+
+.kx-step-add {
+  display: flex;
+  gap: 8px;
+}
+
+.kx-step-add input {
+  flex: 1;
+}
+
+.kx-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 0;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.kx-check input {
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  accent-color: var(--primary);
+}
+
