@@ -80,6 +80,13 @@
     kxChDone: "Completed",
     kxChallengeDone: "Challenge complete! +{n} XP",
     kxLevelUp: "Level up! You are now level {n}.",
+    kxWelcomePre: "Welcome back,",
+    kxStartFocus: "Start focusing",
+    kxStreakWord: "day streak",
+    kxStreakWord1: "day streak",
+    kxKeepFlame: "Focus today to keep your flame.",
+    kxFlameSafe: "Your flame is safe for today ✓",
+    kxLightFlame: "Light your flame with a focus session.",
     kxError: "Error"
   });
 
@@ -138,6 +145,13 @@
     kxChDone: "Terminé",
     kxChallengeDone: "Défi réussi ! +{n} XP",
     kxLevelUp: "Niveau supérieur ! Tu es niveau {n}.",
+    kxWelcomePre: "Bienvenue,",
+    kxStartFocus: "Commencer à me concentrer",
+    kxStreakWord: "jours d'affilée",
+    kxStreakWord1: "jour d'affilée",
+    kxKeepFlame: "Concentre-toi aujourd'hui pour garder ta flamme.",
+    kxFlameSafe: "Ta flamme est sauvée pour aujourd'hui ✓",
+    kxLightFlame: "Allume ta flamme avec une séance de concentration.",
     kxError: "Erreur"
   });
 
@@ -221,6 +235,28 @@
   };
 
   const KINDS = ["ee", "ia", "cas", "tok", "other"];
+
+  // One short line per day under the welcome.
+  const QUOTES = {
+    en: [
+      "Small steps, every single day.",
+      "You don't need perfect, you need consistent.",
+      "Future you is watching. Make them proud.",
+      "One focused hour beats five distracted ones.",
+      "Start where you are.",
+      "Progress, not perfection.",
+      "Show up today. That's the whole secret."
+    ],
+    fr: [
+      "Petits pas, tous les jours.",
+      "Pas besoin d'être parfait, il faut être régulier.",
+      "Ton futur toi te regarde. Rends-le fier.",
+      "Une heure de concentration vaut cinq heures dispersées.",
+      "Commence là où tu es.",
+      "Le progrès, pas la perfection.",
+      "Sois là aujourd'hui. C'est tout le secret."
+    ]
+  };
 
   const CHALLENGES = [
     { id: "m25", type: "minutes", target: 25 },
@@ -349,6 +385,15 @@
   // ------------------------------------------
 
   function injectStructure() {
+    // Elegant serif used for the welcome (falls back to Georgia offline).
+    if (!document.getElementById("kxFonts")) {
+      const fonts = document.createElement("link");
+      fonts.id = "kxFonts";
+      fonts.rel = "stylesheet";
+      fonts.href = "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap";
+      document.head.append(fonts);
+    }
+
     // Navigation
     const firstNav = $("#sidebar .main-nav");
 
@@ -484,7 +529,7 @@
       const grid = $("#page-dashboard .home-grid");
       const host = document.createElement("section");
       host.id = "kxHome";
-      host.className = "kx-home-grid";
+      host.className = "kx-home";
 
       if (grid) grid.before(host);
       else $("#page-dashboard")?.append(host);
@@ -498,6 +543,84 @@
   function countParts(days) {
     if (days === 0) return { num: t("kxToday"), unit: "", word: true };
     return { num: String(days), unit: days === 1 ? t("kxDay") : t("kxDays"), word: false };
+  }
+
+  // Streak flame, in the style of the TikTok / Snapchat streak.
+  function flameSVG(on) {
+    return `
+      <svg class="kx-flame${on ? "" : " is-off"}" viewBox="0 0 64 80" aria-hidden="true">
+        <defs>
+          <linearGradient id="kxFlameOuter" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0" stop-color="#FF3D2E"/>
+            <stop offset="0.55" stop-color="#FF7A1A"/>
+            <stop offset="1" stop-color="#FFB02E"/>
+          </linearGradient>
+          <linearGradient id="kxFlameInner" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0" stop-color="#FFB02E"/>
+            <stop offset="1" stop-color="#FFF1A8"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#kxFlameOuter)" d="M32 2 C34 14 50 24 52 44 C54 62 44 78 32 78 C20 78 10 64 12 46 C13 36 19 30 22 22 C25 28 27 31 30 32 C28 20 29 10 32 2 Z"/>
+        <path fill="url(#kxFlameInner)" d="M32 38 C34 46 44 50 44 60 C44 69 38 75 32 75 C26 75 20 69 20 61 C20 54 25 51 28 44 C29 47 30 48 32 48 C31 44 31 41 32 38 Z"/>
+      </svg>
+    `;
+  }
+
+  function heroHTML(streak) {
+    const first = (data.profile?.name || "").trim().split(/\s+/)[0] || "Student";
+
+    const dateText = new Date().toLocaleDateString(locale(), {
+      weekday: "long",
+      day: "numeric",
+      month: "long"
+    });
+
+    const quotes = QUOTES[currentLanguage] || QUOTES.en;
+    const quote = quotes[dayNumber() % quotes.length];
+
+    const history = getHistory();
+    const focusedToday = (Number(history[today()]) || 0) > 0;
+
+    // The last seven days, today on the right.
+    const week = [6, 5, 4, 3, 2, 1, 0].map((offset) => {
+      const key = daysAgo(offset);
+      const focused = (Number(history[key]) || 0) > 0;
+      const label = new Date(`${key}T00:00:00`)
+        .toLocaleDateString(locale(), { weekday: "narrow" });
+
+      return `
+        <span class="kx-day${focused ? " is-lit" : ""}${offset === 0 ? " is-today" : ""}">
+          <i>${focused ? "🔥" : ""}</i>${escapeHTML(label)}
+        </span>
+      `;
+    }).join("");
+
+    const note = focusedToday
+      ? t("kxFlameSafe")
+      : streak > 0 ? t("kxKeepFlame") : t("kxLightFlame");
+
+    return `
+      <section class="kx-hero">
+        <div class="kx-hero-main">
+          <span class="kx-eyebrow">${escapeHTML(dateText)}</span>
+          <h1>${escapeHTML(t("kxWelcomePre"))}<br><em>${escapeHTML(first)}</em></h1>
+          <p class="kx-quote">“${escapeHTML(quote)}”</p>
+          <button type="button" class="primary-button kx-hero-cta" data-page="focus">${escapeHTML(t("kxStartFocus"))}</button>
+        </div>
+
+        <div class="kx-streak-box">
+          <div class="kx-flame-row">
+            ${flameSVG(streak > 0)}
+            <div class="kx-streak-text">
+              <strong class="kx-streak-num">${streak}</strong>
+              <span>${escapeHTML(streak === 1 ? t("kxStreakWord1") : t("kxStreakWord"))}</span>
+            </div>
+          </div>
+          <div class="kx-week">${week}</div>
+          <small class="kx-streak-note">${escapeHTML(note)}</small>
+        </div>
+      </section>
+    `;
   }
 
   function renderKxHome() {
@@ -518,7 +641,6 @@
           <strong>${escapeHTML(String(data.xp))} XP</strong>
           <div class="progress-track"><div class="progress-fill" style="width:${info.pct}%"></div></div>
           <small>${escapeHTML(t("kxXpLeft", { n: info.toNext, l: info.level + 1 }))}</small>
-          <span class="kx-streak">🔥 ${escapeHTML(streak >= 1 ? t("streakLabel", { n: streak }) : t("kxNoStreak"))}</span>
         </div>
       </article>
     `;
@@ -567,7 +689,8 @@
       </article>
     `;
 
-    host.innerHTML = levelCard + examCard + challengeCard;
+    host.innerHTML = heroHTML(streak) +
+      `<div class="kx-cards">${levelCard}${examCard}${challengeCard}</div>`;
   }
 
   // ------------------------------------------
