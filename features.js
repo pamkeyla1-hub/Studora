@@ -1,4 +1,3 @@
-
 // ==========================================
 // KEYCLA — Features
 // Exam countdown, IB / IGCSE projects, XP, levels and daily challenge.
@@ -772,6 +771,13 @@
 
     const exam = data.exams.find(item => item.id === button.dataset.examEdit);
     if (exam) openExamModal(exam);
+  });
+
+  // Boutons créés après le démarrage de script.js (accueil, menu) :
+  // un seul écouteur sur la page les fait tous fonctionner.
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("[data-page]");
+    if (link && typeof showPage === "function") showPage(link.dataset.page);
   });
 
   document.addEventListener("click", (event) => {
